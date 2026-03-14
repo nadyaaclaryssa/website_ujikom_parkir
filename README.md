@@ -228,4 +228,3 @@ Proyek aplikasi berbasis Web Server `XAMPP`/`MAMP` ini sangat efisien disiagakan
 
 Berlian Sistem Terintegrasi ini dimodelkan, diracik kode per kodenya, dan diukir semata-mata dengan tajam dan akurat secara mutlak demi menjawab tuntutan **Syarat Kelolosan Uji Kompetensi Keahlian (UKK) Rekayasa Perangkat Lunak Nasional Tahun Ini**. Seluruh privasi model terlisensi pendidikan edukasi.
 
-<p align="center">Made with ❤️ for UKK RPL </p>
