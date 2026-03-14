@@ -1,0 +1,127 @@
+-- ============================================================
+-- DATABASE SCHEMA - PARLINE (Aplikasi Parkir UKK)
+-- Database Name : ukk_parkir
+-- Engine         : MySQL / MariaDB
+-- Charset        : utf8mb4
+-- ============================================================
+
+-- Buat database (jika belum ada)
+CREATE DATABASE IF NOT EXISTS `ukk_parkir`
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_general_ci;
+
+USE `ukk_parkir`;
+
+-- ============================================================
+-- 1. TABEL tb_user
+--    Menyimpan data pengguna sistem (Admin, Petugas, Owner).
+-- ============================================================
+CREATE TABLE `tb_user` (
+  `id_user`       INT(11)      NOT NULL AUTO_INCREMENT,
+  `nama_lengkap`  VARCHAR(100) NOT NULL,
+  `username`      VARCHAR(50)  NOT NULL UNIQUE,
+  `password`      VARCHAR(255) NOT NULL COMMENT 'Disimpan dalam format MD5',
+  `role`          ENUM('admin','petugas','owner') NOT NULL DEFAULT 'petugas',
+  `status_aktif`  TINYINT(1)   NOT NULL DEFAULT 1 COMMENT '1 = Aktif, 0 = Non-Aktif',
+  PRIMARY KEY (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Contoh data awal (password = md5("admin123"))
+INSERT INTO `tb_user` (`nama_lengkap`, `username`, `password`, `role`, `status_aktif`) VALUES
+('Administrator', 'admin', '0192023a7bbd73250516f069df18b500', 'admin', 1),
+('Petugas Satu', 'petugas1', '0192023a7bbd73250516f069df18b500', 'petugas', 1),
+('Owner Parkir', 'owner', '0192023a7bbd73250516f069df18b500', 'owner', 1);
+
+
+-- ============================================================
+-- 2. TABEL tb_tarif
+--    Menyimpan data tarif parkir per jenis kendaraan.
+-- ============================================================
+CREATE TABLE `tb_tarif` (
+  `id_tarif`         INT(11)      NOT NULL AUTO_INCREMENT,
+  `jenis_kendaraan`  VARCHAR(50)  NOT NULL COMMENT 'Contoh: motor, mobil',
+  `harga_per_jam`    INT(11)      NOT NULL DEFAULT 0 COMMENT 'Alias: tarif_per_jam',
+  `tarif_per_jam`    INT(11)      NOT NULL DEFAULT 0 COMMENT 'Digunakan di beberapa halaman',
+  PRIMARY KEY (`id_tarif`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Contoh data tarif awal
+INSERT INTO `tb_tarif` (`jenis_kendaraan`, `harga_per_jam`, `tarif_per_jam`) VALUES
+('motor', 2000, 2000),
+('mobil', 5000, 5000);
+
+
+-- ============================================================
+-- 3. TABEL tb_area
+--    Menyimpan data area/zona parkir.
+-- ============================================================
+CREATE TABLE `tb_area` (
+  `id_area`    INT(11)      NOT NULL AUTO_INCREMENT,
+  `nama_area`  VARCHAR(100) NOT NULL COMMENT 'Contoh: Lantai 1, Blok A',
+  `kapasitas`  INT(11)      NOT NULL DEFAULT 50 COMMENT 'Jumlah slot per area',
+  PRIMARY KEY (`id_area`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Contoh data area awal
+INSERT INTO `tb_area` (`nama_area`, `kapasitas`) VALUES
+('Lantai 1', 50),
+('Blok A - Depan', 50),
+('Blok B - Samping', 60);
+
+
+-- ============================================================
+-- 4. TABEL tb_transaksi
+--    Menyimpan seluruh data transaksi parkir (masuk & keluar).
+-- ============================================================
+CREATE TABLE `tb_transaksi` (
+  `id_transaksi`    INT(11)      NOT NULL AUTO_INCREMENT,
+  `plat_nomor`      VARCHAR(20)  NOT NULL,
+  `jenis_kendaraan` VARCHAR(50)  DEFAULT NULL,
+  `id_tarif`        INT(11)      NOT NULL,
+  `id_area`         INT(11)      DEFAULT NULL,
+  `waktu_masuk`     DATETIME     NOT NULL,
+  `waktu_keluar`    DATETIME     DEFAULT NULL,
+  `biaya_total`     INT(11)      NOT NULL DEFAULT 0,
+  `status`          ENUM('masuk','keluar') NOT NULL DEFAULT 'masuk',
+  `petugas`         VARCHAR(100) DEFAULT NULL COMMENT 'ID atau nama petugas yang melayani',
+  PRIMARY KEY (`id_transaksi`),
+  FOREIGN KEY (`id_tarif`) REFERENCES `tb_tarif`(`id_tarif`) ON DELETE CASCADE,
+  FOREIGN KEY (`id_area`)  REFERENCES `tb_area`(`id_area`)   ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ============================================================
+-- 5. TABEL tb_log_aktivitas
+--    Mencatat seluruh aktivitas login pengguna ke sistem.
+-- ============================================================
+CREATE TABLE `tb_log_aktivitas` (
+  `id_log`     INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_user`    INT(11)      NOT NULL,
+  `aktivitas`  VARCHAR(255) NOT NULL,
+  `waktu`      DATETIME     NOT NULL,
+  PRIMARY KEY (`id_log`),
+  FOREIGN KEY (`id_user`) REFERENCES `tb_user`(`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ============================================================
+-- 6. TABEL tb_log (Opsional - digunakan di log_aktivitas.php)
+--    Mencatat log aktivitas sistem dengan format berbeda.
+-- ============================================================
+CREATE TABLE `tb_log` (
+  `id_log`        INT(11)      NOT NULL AUTO_INCREMENT,
+  `user_petugas`  VARCHAR(100) DEFAULT NULL COMMENT 'Nama user atau petugas',
+  `aktivitas`     VARCHAR(255) NOT NULL,
+  `waktu`         DATETIME     NOT NULL,
+  PRIMARY KEY (`id_log`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- ============================================================
+-- CATATAN:
+-- - Password default untuk semua user contoh = "admin123"
+-- - Field `tarif_per_jam` dan `harga_per_jam` pada tb_tarif
+--   keduanya digunakan di file yang berbeda. Pastikan nilainya
+--   selalu sinkron atau gunakan salah satu saja.
+-- - Total kapasitas parkir di sistem = 1350 slot (hardcoded).
+-- ============================================================
