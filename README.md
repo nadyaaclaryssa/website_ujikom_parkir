@@ -2,7 +2,7 @@
   <img src="public/logoo.png" alt="Parline Logo" width="200" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px;" />
 </p>
 
-<h1 align="center">PARLINE 🚗🅿️</h1>
+<h1 align="center">PARLINE</h1>
 
 <p align="center">
   <strong>Sistem Manajemen Parkir Cerdas & Terintegrasi</strong><br/>
