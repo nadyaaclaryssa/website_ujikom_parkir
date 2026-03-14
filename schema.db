@@ -107,7 +107,7 @@ CREATE TABLE `tb_log_aktivitas` (
   `id_log`     INT(11)      NOT NULL AUTO_INCREMENT,
   `id_user`    INT(11)      NOT NULL,
   `aktivitas`  VARCHAR(255) NOT NULL,
-  `waktu`      DATETIME     NOT NULL,
+  `waktu_aktivitas` DATETIME     NOT NULL,
   PRIMARY KEY (`id_log`),
   FOREIGN KEY (`id_user`) REFERENCES `tb_user`(`id_user`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
