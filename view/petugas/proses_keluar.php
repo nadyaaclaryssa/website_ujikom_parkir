@@ -1,6 +1,6 @@
 
 <?php
-// [SINTAKS PHP]: session_start() | Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
+// [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
 session_start();
 // [SINTAKS PHP]: include | Memanggil koneksi database agar query dapat dieksekusi oleh file ini
 include '../config/koneksi.php';

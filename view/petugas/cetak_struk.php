@@ -1,6 +1,6 @@
 
 <?php
-// [SINTAKS PHP]: include | Memanggil koneksi database agar query dapat dieksekusi oleh file ini
+// [SINTAKS PHP]: include Memanggil koneksi database agar query dapat dieksekusi oleh file ini
 include '../config/koneksi.php';
 
 $id = isset(// [SINTAKS PHP]: $_GET | Menangkap parameter URL untuk memproses logic database spesifik

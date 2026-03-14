@@ -5,7 +5,7 @@
 // -> Tujuan Spesifik: Modul/komponen fungsional spesifik aplikasi Smart Parking System.
 // -> Penjelasan ini digenerate secara khusus untuk membantu penjabaran materi presentasi UKK RPL agar terstruktur.
 // ======================================
-// [SINTAKS PHP]: session_start() | Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
+// [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
 session_start();
 if($_SESSION['role'] != "admin") // [SINTAKS PHP]: header() | Fungsi untuk melakukan Redirect (pengalihan otomatis) ke lokasi halaman web tertentu
 header("location:../../auth/index.php");

@@ -5,7 +5,7 @@
 // -> Tujuan Spesifik: Menampilkan Laporan grafik Chart Keuangan & Tren Performa sistem manajemen parkir secara real-time.
 // -> Penjelasan ini digenerate secara khusus untuk membantu penjabaran materi presentasi UKK RPL agar terstruktur.
 // ======================================
-// [SINTAKS PHP]: session_start() | Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
+// [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
 session_start();
 if($_SESSION['role'] != "owner") { // [SINTAKS PHP]: header() | Fungsi untuk melakukan Redirect (pengalihan otomatis) ke lokasi halaman web tertentu
 header("location:../../auth/index.php"); exit; }

@@ -5,7 +5,7 @@
 // -> Tujuan Spesifik: Halaman antarmuka monitor Kasir Parkir (Frontend) u/ memantau stok area slot parkir yang ada vs terpakai.
 // -> Penjelasan ini digenerate secara khusus untuk membantu penjabaran materi presentasi UKK RPL agar terstruktur.
 // ======================================
-// [SINTAKS PHP]: session_start() | Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
+// [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
 session_start();
 if($_SESSION['role'] != "petugas") { // [SINTAKS PHP]: header() | Fungsi untuk melakukan Redirect (pengalihan otomatis) ke lokasi halaman web tertentu
 // [SINTAKS PHP]: header() | Pengalihan sistem otomatis (Redirect) ke modul terkait

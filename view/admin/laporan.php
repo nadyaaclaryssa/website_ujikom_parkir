@@ -7,7 +7,7 @@
 // ======================================
 // [SINTAKS PHP]: session_start() | Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
 session_start();
-// [SINTAKS PHP]: include | Menyertakan file konfigurasi koneksi ke server MySQL Database agar tabel bisa dibaca/ditulis
+// [SINTAKS PHP]: include Menyertakan file konfigurasi koneksi ke server MySQL Database agar tabel bisa dibaca/ditulis
 include '../../config/koneksi.php';
 
 if($_SESSION['role'] != "petugas") { // [SINTAKS PHP]: header() | Fungsi untuk melakukan Redirect (pengalihan otomatis) ke lokasi halaman web tertentu

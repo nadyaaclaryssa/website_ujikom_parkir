@@ -7,4 +7,4 @@ session_destroy();
 // [SINTAKS PHP]: header() | Fungsi untuk melakukan Redirect (pengalihan otomatis) ke lokasi halaman web tertentu
 header("location:index.php");
 ?>
-
+/

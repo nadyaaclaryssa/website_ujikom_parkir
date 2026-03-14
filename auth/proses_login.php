@@ -68,3 +68,4 @@ echo "<script>alert('Gagal! Username atau Password Salah.'); window.location='in
 }
 ?>
 
+/
