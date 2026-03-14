@@ -1,55 +1,80 @@
-MATERI PRESENTASI UKK - APLIKASI PARKIR (PARLINE)
-
 ==================================================
+MATERI PRESENTASI UKK - APLIKASI PARKIR (PARLINE)
+==================================================
+
 SLIDE 1: JUDUL DOKUMEN / COVER
 ==================================================
-• Judul: PARLINE (Smart Parking System)
-• Deskripsi: Aplikasi manajemen parkir berbasis Web komprehensif (PHP Native + MySQL).
+• Judul Projek: PARLINE (Sistem Manajemen Parkir Cerdas & Terintegrasi)
+• Deskripsi: Aplikasi web komprehensif untuk mendigitalisasi area parkir (Pencatatan Real-time, Kalkulasi Otomatis, & Laporan Pendapatan).
+• Teknologi Inti: PHP Native (8.x), MySQLi, HTML5, CSS3.
 • Kelas / Jurusan: Rekayasa Perangkat Lunak (RPL)
 
 ==================================================
 SLIDE 2: LATAR BELAKANG & TUJUAN
 ==================================================
-Latar Belakang: 
-• Pencatatan manual rentan kecurangan (hilangnya karcis, manipulasi pendapatan, dsb).
+Latar Belakang Masalah: 
+1. Pencatatan manual menggunakan kertas sangat rentan hilang dan rawan manipulasi.
+2. Sering terjadi miskomunikasi antara petugas dan pengendara mengenai sisa slot parkir kosong.
+3. Kesalahan hitung tarif parkir manual oleh petugas loket berujung hilangnya omset.
 
-Tujuan Aplikasi:
-1. Mendigitalisasi & mempermudah petugas kasir/gate parkir mencatat keluar/masuk kendaraan.
-2. Mengamankan omset manajemen via perhitungan otomatis jam parkir, cetak struk, detail DB relasional.
-3. Transparansi laporan harian + Grafik visual bagi Owner (Hak Akses Owner).
-
-==================================================
-SLIDE 3: STRUKTUR DATABASE TERKINI (Update Normalisasi 1NF & 2NF)
-==================================================
-• tb_kendaraan: Memisahkan entitas fisik kendaraan (ID, Plat, Jenis, Warna, Pemilik) agar pendataan solid dan mengurangi redundansi.
-• tb_transaksi: Log Transaksi parkir (Check In/Out, Durasi, Tarif, Status).
-• tb_area_parkir: Menyimpan kapasitas maksimal (Slot Area) + kapasitas `terisi` (yang auto-kurang/auto-tambah via kodingan PHP Check in/out).
-• tb_user & tb_log_aktivitas: Mencatat seluruh jejak audit login para entitas Admin/Owner/Petugas.
+Solusi PARLINE (Tujuan Aplikasi):
+1. Mendigitalisasi gerbang parkir dengan sistem Check-In & Check-Out cepat terkomputerisasi.
+2. Auto-Kalkulasi tarif berdasarkan argo durasi (jam) yang 100% akurat.
+3. Menyediakan dashboard pantauan slot parkir real-time (ketersediaan lahan).
+4. Transparansi laporan harian + Grafik visual bagi pemangku kepentingan (Owner).
 
 ==================================================
-SLIDE 4: HAK AKSES SISTEM (SSO LAYER)
+SLIDE 3: STRUKTUR DATABASE RELASIONAL (7 TABEL)
 ==================================================
-1. ADMIN: Level Tertinggi -> Master Data Control (Kelola User & Karyawan, Setting Harga Tarif, Master Area).
-2. PETUGAS: Ujung Tombak Operasional (Dashboard UI/UX Interaktif, Transaksi Input, Pengecekan Plat Kendaraan di Loket Keluar).
-3. OWNER: Manajemen Eksklusif (View-Only Grafik Laporan, Tren Omset 7 Hari, Download Laporan Harian).
+Arsitektur database dibangun efisien dan ternormalisasi menggunakan 7 tabel aktif:
+1. tb_user: Menyimpan data kredensial akses (Admin, Petugas, Owner) beserta Password (MD5).
+2. tb_tarif: Parameter tarif dasar & per-jam setiap jenis kendaraan (Mobil, Motor).
+3. tb_area_parkir: Pengendali kapasitas slot fisik (Lantai 1, Blok A, dsb) secara dinamis.
+4. tb_kendaraan: Entitas fisik kendaraan pelanggan (Plat, Warna, Jenis).
+5. tb_transaksi: Jantung sistem, merekam durasi, biaya, dan riwayat "Masuk/Keluar".
+6. tb_log_aktivitas: Sistem Audit Trail (Catatan interaksi CRUD user di aplikasi).
+7. tb_log: (Opsional/Legacy) Catatan legacy aktivitas petugas.
 
 ==================================================
-SLIDE 5: TEKNOLOGI YANG DIPAKAI (ARCH)
+SLIDE 4: HAK AKSES SISTEM (ROLE-BASED ACCESS)
 ==================================================
-• Routing MVC/Native PHP 7/8 terbaru: Terbagi atas modul `auth/` dan `view/` secara rapi dan sangat secure.
-• Koneksi: MySQLi Interaktif (PDO-Ready Concept & Real Escaped Keys).
-• Layout/Interface: Modern Clean Glass-UI Design (Vanilla CSS grid/flex). 
-• PDF/Print: Modul Printing Otomatis dengan Web Native Printer Spooler CSS Media Query.
+Aplikasi mengusung 3 pilar batas otoritas utama:
+1. ADMIN (Pengendali Sistem):
+   -> Punya akses penuh (*God Mode*).
+   -> Kelola Master Data: Tambah/Edit/Hapus User Karyawan, Setting Tarif Harga, dan Buka Area Parkir Baru.
+   -> Pantau Log Audit keamanan.
+
+2. PETUGAS (Garda Operasional):
+   -> Fokus di loket antarmuka Input. 
+   -> Melakukan Check-In (Pilih Area & Plat), Check-Out (Kalkulator Tagihan), dan Print Struk.
+   -> Layar dihiasi "Live HUD" penunjuk sisa kuota parkir.
+
+3. OWNER (Pemangku Kepentingan):
+   -> Visibilitas penuh ke Finansial tanpa bisa merusak data (View-Only).
+   -> Dashboard Chart/Grafik Tren Omset 7 hari terakhir.
+   -> Tarik & Ekspor laporan spesifik dengan filter rentang tanggal.
 
 ==================================================
-SLIDE 6: ALUR SIKLUS HIDUP TRANSAKSI OTO-SINKRONISASI
+SLIDE 5: TEKNOLOGI & KEAMANAN SISTEM
 ==================================================
-1 [Check IN] -> Petugas Input Mobil -> Data Kendaraan Tersimpan Otomatis ke DB `tb_kendaraan` -> ID-nya direlasikan ke `tb_transaksi`.
-2 [Slot Trigger] -> Koding akan meng-query `UPDATE tb_area_parkir` untuk mengurangi sisa slot yang tertempel secara real-time pada UI Dashboard Kasir.
-3 [Check OUT] -> Deteksi Plat via Pencarian -> Proses Date::Diff (DateTime PHP) dari 2 matriks waktu. Outputnya dikalikan `tarif_per_jam`.
-4 [Finish] -> Petugas serah terima bayaran & auto print thermal receipt paper!
+• Backend (PHP & MySQLi): Logika yang efisien dengan implementasi *mysqli_real_escape_string* sebagai pelindung anti-hacker (SQL Injection).
+• Keamanan Sesi (Session Start): Pengendali batas tembok api yang memaksa pengguna ter-redirect (lempar paksa) bila mencoba masuk halaman tanpa izin/login.
+• Enkripsi (MD5 Algoritma): Semua sandi tersimpan sebagai kode acak tidak beraturan di server.
+• Visual Layer: Menggunakan antarmuka Glass-morphism (Vanilla CSS) sehingga modern dan elegan tanpa memberatkan *loading* browser.
 
 ==================================================
-SLIDE 7: SIMPULAN
+SLIDE 6: ALUR SIKLUS HIDUP TRANSAKSI (WORKFLOW)
 ==================================================
-Sistem Manajemen Terintegrasi ini sempurna mengatasi segala loophole parkiran konvensional, sembari memberikan desain super friendly dan modern. Implementasi di lapangan diklaim bisa mendongkrak pemasukan dan keamanan 100%.
+[STEP 1 - CHECK IN]: 
+Kendaraan masuk -> Petugas ketik Plat & Pilih Area -> Sistem menyimpan ke `tb_kendaraan` dan merekam jam kedatangan absolut ke `tb_transaksi` -> Slot `tb_area_parkir` langsung berkurang 1.
+
+[STEP 2 - CHECK OUT]: 
+Kendaraan keluar -> Petugas ketik plat -> Sistem menghitung selisih waktu (`Date::Diff`) antara jam kedatangan vs kepulangan -> Selisih jam dikali tarif -> Tagihan muncul.
+
+[STEP 3 - FINISHING]: 
+Petugas klik simpan -> Transaksi sukses dibayar -> Slot `tb_area_parkir` bertambah 1 kembali -> Print Struk Kertas Termal otomatis (Window Print UI).
+
+==================================================
+SLIDE 7: KESIMPULAN & NILAI TAMBAH (VALUE PLUS)
+==================================================
+Sistem Manajemen "PARLINE" bukan sekedar alat pencatat, melainkan Solusi Terintegrasi yang mencegah 100% kebocoran uang parkir sembari menyajikan antarmuka visual kelas Enterprise. Proyek ini sangat siap & adaptif digunakan di dunia industri perparkiran konvensional manapun.
