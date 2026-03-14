@@ -1,7 +1,11 @@
+// =========================================================================
+// ALL_CODE.TXT - SMART PARKING SYSTEM (PARLINE)
+// KUMPULAN PURE SOURCE CODE TANPA KOMENTAR UNTUK KEBUTUHAN COPAS UKK
+// =========================================================================
 
-// ==========================================
-// FILE: config/koneksi.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: config/koneksi.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
@@ -18,9 +22,9 @@ if (!$koneksi) {
 ?>
 
 
-// ==========================================
-// FILE: auth/index.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: auth/index.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <!DOCTYPE html>
@@ -141,9 +145,9 @@ if (!$koneksi) {
 </html>
 
 
-// ==========================================
-// FILE: auth/logout.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: auth/logout.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php 
@@ -153,9 +157,9 @@ header("location:index.php");
 ?>
 
 
-// ==========================================
-// FILE: auth/proses_login.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: auth/proses_login.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
@@ -165,20 +169,20 @@ date_default_timezone_set('Asia/Jakarta');
 
 if (isset(
 $_POST['login'])) {
-    $username = mysqli_real_escape_string($koneksi, 
+    $username = mysqli_real_escape_string($koneksi,
 $_POST['username']);
-    $password = mysqli_real_escape_string($koneksi, 
+    $password = mysqli_real_escape_string($koneksi,
 $_POST['password']);
-    $pass_md5 = 
+    $pass_md5 =
 md5($password);
 
-    $query = 
+    $query =
 mysqli_query($koneksi, "SELECT * FROM tb_user WHERE username='$username' AND password='$pass_md5'");
-    $cek = 
+    $cek =
 mysqli_num_rows($query);
 
     if ($cek > 0) {
-        $data = 
+        $data =
 mysqli_fetch_assoc($query);
         
         $_SESSION['id_user'] = $data['id_user'];
@@ -210,14 +214,14 @@ echo "<script>alert('Gagal! Username atau Password Salah.'); window.location='in
 ?>
 
 
-// ==========================================
-// FILE: view/admin/area_parkir.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/area_parkir.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
@@ -388,24 +392,24 @@ $areas = [
 </html>
 
 
-// ==========================================
-// FILE: view/admin/dashboard.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/dashboard.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
-$total_pendapatan = 
+$total_pendapatan =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT SUM(biaya_total) as total FROM tb_transaksi"))['total'] ?? 0;
-$kendaraan_masuk = 
+$kendaraan_masuk =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_transaksi WHERE status='masuk'"))['total'] ?? 0;
-$total_petugas = 
+$total_petugas =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_user WHERE role='petugas'"))['total'] ?? 0;
 $sisa_slot = 1350 - $kendaraan_masuk; 
@@ -662,14 +666,14 @@ $sisa_slot = 1350 - $kendaraan_masuk;
                     </thead>
                     <tbody>
                         <?php
-                        $q_log = 
+                        $q_log =
 mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan, u.nama_lengkap as petugas FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan LEFT JOIN tb_user u ON t.id_user = u.id_user ORDER BY t.waktu_masuk DESC LIMIT 5");
-                        while($row = 
+                        while($row =
 mysqli_fetch_assoc($q_log)) {
                         ?>
                         <tr>
                             <td style="font-weight: 700; color: #0f172a;"><?= $row['petugas'] ?? 'Sistem' ?></td>
-                            <td><span class="badge <?= ($row['jenis_kendaraan'] ?? '') == 'motor' ? 'badge-motor' : 'badge-mobil' ?>"><?= 
+                            <td><span class="badge <?= ($row['jenis_kendaraan'] ?? '') == 'motor' ? 'badge-motor' : 'badge-mobil' ?>"><?=
 strtoupper($row['jenis_kendaraan'] ?? 'NULL') ?></span></td>
                             <td><span class="plat-code"><?= $row['plat_nomor'] ?></span></td>
                             <td style="color: #475569;"><?= date('d M, H:i', strtotime($row['waktu_masuk'])) ?></td>
@@ -687,9 +691,9 @@ strtoupper($row['jenis_kendaraan'] ?? 'NULL') ?></span></td>
 </html>
 
 
-// ==========================================
-// FILE: view/admin/kelola_area.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/kelola_area.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 <?php
 session_start();
@@ -739,18 +743,18 @@ include '../../config/koneksi.php';
     </div>
 </body>
 </html>
-// ==========================================
-// FILE: view/admin/kelola_user.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/kelola_user.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
-$kendaraan_masuk = 
+$kendaraan_masuk =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_transaksi WHERE status='masuk'"))['total'] ?? 0;
 
@@ -762,12 +766,12 @@ $_POST['simpan'])){
 $_POST['nama_lengkap']));
     $user = mysqli_real_escape_string($koneksi, trim(
 $_POST['username']));
-    $pass = mysqli_real_escape_string($koneksi, 
+    $pass = mysqli_real_escape_string($koneksi,
 $_POST['password']);
-    $role = mysqli_real_escape_string($koneksi, 
+    $role = mysqli_real_escape_string($koneksi,
 $_POST['role']); 
     
-    $cek = 
+    $cek =
 mysqli_query($koneksi, "SELECT * FROM tb_user WHERE username='$user'");
     
     if(
@@ -775,7 +779,7 @@ mysqli_num_rows($cek) > 0) {
         $error_msg = "Username '$user' terdeteksi sudah ada di sistem!"; 
     } else {
         $q = "INSERT INTO tb_user (nama_lengkap, username, password, role) VALUES ('$nama', '$user', '$pass', '$role')";
-        $simpan = 
+        $simpan =
 mysqli_query($koneksi, $q);
         
         if($simpan) {
@@ -789,7 +793,7 @@ header("location:kelola_user.php");
 
 if(isset(
 $_GET['hapus'])){
-    $id = mysqli_real_escape_string($koneksi, 
+    $id = mysqli_real_escape_string($koneksi,
 $_GET['hapus']);
 mysqli_query($koneksi, "DELETE FROM tb_user WHERE id_user='$id'");
 header("location:kelola_user.php");
@@ -908,17 +912,17 @@ header("location:kelola_user.php");
                     <tbody>
                         <?php
                         $no = 1;
-                        $q = 
+                        $q =
 mysqli_query($koneksi, "SELECT * FROM tb_user ORDER BY id_user DESC");
-                        while($data = 
+                        while($data =
 mysqli_fetch_assoc($q)){
                         ?>
                         <tr>
                             <td>#<?= $no++ ?></td>
                             <td style="font-weight: 700;"><?= $data['nama_lengkap'] ?></td>
                             <td>@<?= $data['username'] ?></td>
-                            <td><span class="role-badge role-<?= 
-strtoupper($data['role']) ?>"><?= 
+                            <td><span class="role-badge role-<?=
+strtoupper($data['role']) ?>"><?=
 strtoupper($data['role']) ?></span></td>
                             <td style="text-align: right;"><a href="?hapus=<?= $data['id_user'] ?>" class="btn-hapus" onclick="return confirm('Hapus?')">Hapus</a></td>
                         </tr>
@@ -932,25 +936,25 @@ strtoupper($data['role']) ?></span></td>
 </html>
 
 
-// ==========================================
-// FILE: view/admin/laporan.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/laporan.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
 include '../../config/koneksi.php';
 
-if($_SESSION['role'] != "petugas") { 
+if($_SESSION['role'] != "petugas") {
 header("location:../../auth/index.php"); exit; }
 $nama_petugas = $_SESSION['nama_lengkap'] ?? 'Petugas';
 
-$query = 
+$query =
 mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan, u.nama_lengkap as petugas FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan LEFT JOIN tb_user u ON t.id_user = u.id_user WHERE t.status='keluar' ORDER BY t.waktu_keluar DESC");
 
-$total_duit = 
+$total_duit =
 mysqli_query($koneksi, "SELECT SUM(biaya_total) as total FROM tb_transaksi WHERE status='keluar'");
-$total = 
+$total =
 mysqli_fetch_assoc($total_duit);
 ?>
 
@@ -1003,7 +1007,7 @@ mysqli_fetch_assoc($total_duit);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while($row = 
+                    <?php while($row =
 mysqli_fetch_assoc($query)): ?>
                     <tr>
                         <td><?= date('d/m/Y H:i', strtotime($row['waktu_keluar'])) ?></td>
@@ -1021,21 +1025,21 @@ mysqli_fetch_assoc($query)): ?>
 </html>
 
 
-// ==========================================
-// FILE: view/admin/log_aktivitas.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/log_aktivitas.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
 include '../../config/koneksi.php';
 
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 
-$filter_tgl = 
+$filter_tgl =
 $_GET['tanggal'] ?? '';
-$search = 
+$search =
 $_GET['search'] ?? '';
 
 $query_str = "SELECT * FROM tb_log WHERE 1=1";
@@ -1048,7 +1052,7 @@ if($search) {
 }
 
 $query_str .= " ORDER BY waktu DESC";
-$query = 
+$query =
 mysqli_query($koneksi, $query_str);
 ?>
 
@@ -1276,7 +1280,7 @@ mysqli_query($koneksi, $query_str);
                     <?php 
                     if(
 mysqli_num_rows($query) > 0):
-                        while($row = 
+                        while($row =
 mysqli_fetch_assoc($query)): 
                     ?>
                     <tr>
@@ -1302,27 +1306,27 @@ mysqli_fetch_assoc($query)):
 </html>
 
 
-// ==========================================
-// FILE: view/admin/tarif_edit.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/tarif_edit.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
-$id = 
+$id =
 $_GET['id'];
-$data = 
+$data =
 mysqli_query($koneksi, "SELECT * FROM tb_tarif WHERE id_tarif='$id'");
-$t = 
+$t =
 mysqli_fetch_array($data);
 
 if(isset(
 $_POST['update'])){
-    $tarif = 
+    $tarif =
 $_POST['tarif'];
 mysqli_query($koneksi, "UPDATE tb_tarif SET tarif_per_jam='$tarif' WHERE id_tarif='$id'");
 echo "<script>alert('Tarif Berhasil Diupdate!'); window.location='tarif_index.php';</script>";
@@ -1395,22 +1399,22 @@ echo "<script>alert('Tarif Berhasil Diupdate!'); window.location='tarif_index.ph
 </html>
 
 
-// ==========================================
-// FILE: view/admin/tarif_index.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/tarif_index.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
-$query = 
+$query =
 mysqli_query($koneksi, "SELECT * FROM tb_tarif");
 
 $semua_tarif = [];
-while($row = 
+while($row =
 mysqli_fetch_assoc($query)){
     $semua_tarif[] = $row;
 }
@@ -1598,26 +1602,26 @@ mysqli_fetch_assoc($query)){
 </html>
 
 
-// ==========================================
-// FILE: view/admin/tarif_parkir.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/tarif_parkir.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
-$kendaraan_masuk = 
+$kendaraan_masuk =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_transaksi WHERE status='masuk'"))['total'] ?? 0;
 
 if(isset(
 $_POST['tambah'])){
-    $jenis = mysqli_real_escape_string($koneksi, 
+    $jenis = mysqli_real_escape_string($koneksi,
 $_POST['jenis_kendaraan']);
-    $harga = mysqli_real_escape_string($koneksi, 
+    $harga = mysqli_real_escape_string($koneksi,
 $_POST['harga_per_jam']);
 mysqli_query($koneksi, "INSERT INTO tb_tarif (jenis_kendaraan, harga_per_jam) VALUES ('$jenis', '$harga')");
 header("location:tarif_parkir.php");
@@ -1625,7 +1629,7 @@ header("location:tarif_parkir.php");
 
 if(isset(
 $_GET['hapus'])){
-    $id = 
+    $id =
 $_GET['hapus'];
 mysqli_query($koneksi, "DELETE FROM tb_tarif WHERE id_tarif='$id'");
 header("location:tarif_parkir.php");
@@ -1834,14 +1838,14 @@ header("location:tarif_parkir.php");
                     </thead>
                     <tbody>
                         <?php
-                        $q = 
+                        $q =
 mysqli_query($koneksi, "SELECT * FROM tb_tarif");
-                        while($data = 
+                        while($data =
 mysqli_fetch_assoc($q)){
                         ?>
                         <tr>
                             <td style="font-weight: 600; color: #cbd5e1;">#<?= $data['id_tarif'] ?></td>
-                            <td style="font-weight: 700; color: #0f172a;"><?= 
+                            <td style="font-weight: 700; color: #0f172a;"><?=
 strtoupper($data['jenis_kendaraan']) ?></td>
                             <td>
                                 <span class="price-tag">
@@ -1866,9 +1870,9 @@ strtoupper($data['jenis_kendaraan']) ?></td>
 </html>
 
 
-// ==========================================
-// FILE: view/admin/user_hapus.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/user_hapus.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
@@ -1880,10 +1884,10 @@ echo "<script>alert('Akses Ditolak!'); window.location='../../index.php';</scrip
     exit;
 }
 
-$id = 
+$id =
 $_GET['id'];
 
-$query = 
+$query =
 mysqli_query($koneksi, "DELETE FROM tb_user WHERE id_user = '$id'");
 
 if($query){
@@ -1894,22 +1898,22 @@ echo "<script>alert('User berhasil dibasmi!'); window.location='user_daftar.php'
 ?>
 
 
-// ==========================================
-// FILE: view/admin/user_index.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/user_index.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") { 
+if($_SESSION['role'] != "admin") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
-$query = 
+$query =
 mysqli_query($koneksi, "SELECT * FROM tb_user ORDER BY id_user DESC");
 
 $users = [];
-while($row = 
+while($row =
 mysqli_fetch_assoc($query)){
     $users[] = $row;
 }
@@ -2131,32 +2135,32 @@ mysqli_fetch_assoc($query)){
 </html>
 
 
-// ==========================================
-// FILE: view/admin/user_tambah.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/admin/user_tambah.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "admin") 
+if($_SESSION['role'] != "admin")
 header("location:../../auth/index.php");
 include '../../config/koneksi.php';
 
 if(isset(
 $_POST['submit'])){
-    $nama = 
+    $nama =
 $_POST['nama'];
-    $user = 
+    $user =
 $_POST['user'];
-    $pass = 
+    $pass =
 md5(
 $_POST['pass']);
-    $role = 
+    $role =
 $_POST['role'];
 
-    $query = 
+    $query =
 mysqli_query($koneksi, "INSERT INTO tb_user VALUES(NULL, '$nama', '$user', '$pass', '$role', 1)");
-    if($query) 
+    if($query)
 echo "<script>alert('Berhasil!'); window.location='dashboard.php';</script>";
 }
 ?>
@@ -2173,16 +2177,16 @@ echo "<script>alert('Berhasil!'); window.location='dashboard.php';</script>";
 </form>
 
 
-// ==========================================
-// FILE: view/petugas/cetak_struk.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/petugas/cetak_struk.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 include '../config/koneksi.php';
 
 $id = isset(
-$_GET['id']) ? mysqli_real_escape_string($koneksi, 
+$_GET['id']) ? mysqli_real_escape_string($koneksi,
 $_GET['id']) : 0;
 
 $query = "SELECT t.*, k.plat_nomor, k.jenis_kendaraan, u.nama_lengkap as petugas 
@@ -2191,9 +2195,9 @@ $query = "SELECT t.*, k.plat_nomor, k.jenis_kendaraan, u.nama_lengkap as petugas
           JOIN tb_user u ON t.id_user = u.id_user
           WHERE t.id_parkir = '$id'"; 
 
-$data = 
+$data =
 mysqli_query($koneksi, $query);
-$r = 
+$r =
 mysqli_fetch_assoc($data);
 
 if (!$r) {
@@ -2202,24 +2206,24 @@ if (!$r) {
 ?>
 
 
-// ==========================================
-// FILE: view/petugas/cetak_struk_keluar.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/petugas/cetak_struk_keluar.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 include '../config/koneksi.php';
-$id = 
+$id =
 $_GET['id'];
 
-$query = 
+$query =
 mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan, tr.tarif_per_jam, a.nama_area 
                                  FROM tb_transaksi t 
                                  JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan
                                  JOIN tb_tarif tr ON t.id_tarif = tr.id_tarif
                                  JOIN tb_area_parkir a ON t.id_area = a.id_area
                                  WHERE t.id_parkir = '$id'");
-$d = 
+$d =
 mysqli_fetch_assoc($query);
 
 ?>
@@ -2280,14 +2284,14 @@ mysqli_fetch_assoc($query);
 </html>
 
 
-// ==========================================
-// FILE: view/petugas/dashboard.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/petugas/dashboard.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "petugas") { 
+if($_SESSION['role'] != "petugas") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
@@ -2455,7 +2459,7 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
 
             <div class="area-grid">
                 <?php
-                $q_area = 
+                $q_area =
 mysqli_query($koneksi, "SELECT * FROM tb_area_parkir");
                 while($area = mysqli_fetch_assoc($q_area)) {
                     $sisa = $area['kapasitas']; 
@@ -2476,9 +2480,9 @@ mysqli_query($koneksi, "SELECT * FROM tb_area_parkir");
 </html>
 
 
-// ==========================================
-// FILE: view/petugas/proses_keluar.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/petugas/proses_keluar.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
@@ -2499,9 +2503,9 @@ $_POST['keyword']));
             WHERE k.plat_nomor = '$keyword' AND t.status = 'masuk'
             ORDER BY t.id_parkir DESC LIMIT 1";
             
-    $query = 
+    $query =
 mysqli_query($koneksi, $sql);
-    $data = 
+    $data =
 mysqli_fetch_assoc($query);
 
     if ($data) {
@@ -2517,7 +2521,7 @@ mysqli_fetch_assoc($query);
 
         $total_bayar = $jam * $data['tarif_per_jam'];
 
-        $update = 
+        $update =
 mysqli_query($koneksi, "UPDATE tb_transaksi SET 
                                           waktu_keluar = '$waktu_keluar', 
                                           durasi_jam = '$jam',
@@ -2543,9 +2547,9 @@ header("location:transaksi_keluar.php");
 ?>
 
 
-// ==========================================
-// FILE: view/petugas/proses_masuk.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/petugas/proses_masuk.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
@@ -2557,17 +2561,17 @@ if(isset(
 $_POST['simpan'])) {
     $plat = mysqli_real_escape_string($koneksi, strtoupper(
 $_POST['plat_nomor']));
-    $id_tarif = 
+    $id_tarif =
 $_POST['id_tarif'];
-    $id_area = 
+    $id_area =
 $_POST['id_area'];
     $waktu_masuk = date("Y-m-d H:i:s");
     
     $id_user = $_SESSION['id_user'] ?? 1; 
 
-    $q_tarif = 
+    $q_tarif =
 mysqli_query($koneksi, "SELECT jenis_kendaraan FROM tb_tarif WHERE id_tarif='$id_tarif'");
-    $d_tarif = 
+    $d_tarif =
 mysqli_fetch_assoc($q_tarif);
     $jenis = $d_tarif['jenis_kendaraan'] ?? 'lainnya';
 
@@ -2600,14 +2604,14 @@ header("location:cetak_struk.php?id=$id_parkir");
 ?>
 
 
-// ==========================================
-// FILE: view/petugas/transaksi_keluar.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/petugas/transaksi_keluar.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "petugas") { 
+if($_SESSION['role'] != "petugas") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
@@ -2788,21 +2792,21 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
 </html>
 
 
-// ==========================================
-// FILE: view/petugas/transaksi_masuk.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/petugas/transaksi_masuk.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if ($_SESSION['role'] != "petugas") { 
+if ($_SESSION['role'] != "petugas") {
 header("location:../../auth/index.php");
     exit;
 }
 include '../../config/koneksi.php';
 
-$area_terpilih = isset( 
-$_GET['area']) ? 
+$area_terpilih = isset(
+$_GET['area']) ?
 $_GET['area'] : '';
 $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_transaksi WHERE status='masuk'"))['total'] ?? 0;
 ?>
@@ -3059,7 +3063,7 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
                             <select name="id_tarif" required>
                                 <option value="">-- Pilih Jenis --</option>
                                 <?php
-$q_area = 
+$q_area =
 mysqli_query($koneksi, "SELECT * FROM tb_area_parkir");
 while ($t = mysqli_fetch_assoc($q_tarif)) {
     echo "<option value='" . $t['id_tarif'] . "'>" . $t['jenis_kendaraan'] . "</option>";
@@ -3097,27 +3101,27 @@ while ($a = mysqli_fetch_assoc($q_area)) {
 </html>
 
 
-// ==========================================
-// FILE: view/owner/dashboard.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/owner/dashboard.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "owner") { 
+if($_SESSION['role'] != "owner") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
 $hari_ini = date('Y-m-d');
 $bulan_ini = date('Y-m');
 
-$pendapatan_hari = 
+$pendapatan_hari =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT SUM(biaya_total) as total FROM tb_transaksi WHERE DATE(waktu_keluar) = '$hari_ini'"))['total'] ?? 0;
-$pendapatan_bulan = 
+$pendapatan_bulan =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT SUM(biaya_total) as total FROM tb_transaksi WHERE DATE_FORMAT(waktu_keluar, '%Y-%m') = '$bulan_ini'"))['total'] ?? 0;
-$unit_keluar = 
+$unit_keluar =
 mysqli_fetch_assoc(
 mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_transaksi WHERE DATE(waktu_keluar) = '$hari_ini'"))['total'] ?? 0;
 ?>
@@ -3312,18 +3316,18 @@ mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_transaksi WHERE DATE(wa
 </html>
 
 
-// ==========================================
-// FILE: view/owner/detail_laporan.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/owner/detail_laporan.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
 session_start();
-if($_SESSION['role'] != "owner") { 
+if($_SESSION['role'] != "owner") {
 header("location:../../auth/index.php"); exit; }
 include '../../config/koneksi.php';
 
-$query = 
+$query =
 mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan WHERE t.status='keluar' ORDER BY t.waktu_keluar DESC");
 ?>
 
@@ -3451,7 +3455,7 @@ mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FROM tb_tran
                     <tbody>
                         <?php 
                         $no = 1;
-                        while($data = 
+                        while($data =
 mysqli_fetch_array($query)) { 
                         ?>
                         <tr>
@@ -3477,9 +3481,9 @@ mysqli_fetch_array($query)) {
 </html>
 
 
-// ==========================================
-// FILE: view/owner/diagram_pendapatan.php
-// ==========================================
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: view/owner/diagram_pendapatan.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 <?php
@@ -3499,9 +3503,9 @@ for ($i = 6; $i >= 0; $i--) {
     $label_tanggal[] = date('d M', strtotime($tgl));
     
     $sql = "SELECT SUM(biaya_total) as total FROM tb_transaksi WHERE DATE(waktu_keluar) = '$tgl' AND status = 'keluar'";
-    $query = 
+    $query =
 mysqli_query($koneksi, $sql);
-    $res = 
+    $res =
 mysqli_fetch_assoc($query);
     $data_pendapatan[] = $res['total'] ?? 0;
 }
@@ -3648,7 +3652,7 @@ mysqli_fetch_assoc($query);
                     borderWidth: 3,
                     backgroundColor: gradient,
                     fill: true,
-                    tension: 0.4, 
+                    tension: 0.4,
                     pointBackgroundColor: '#8f3434',
                     pointRadius: 5
                 }]

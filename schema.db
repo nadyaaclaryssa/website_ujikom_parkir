@@ -28,7 +28,7 @@ CREATE TABLE `tb_user` (
 
 INSERT INTO `tb_user` (`nama_lengkap`, `username`, `password`, `role`, `status_aktif`) VALUES
 ('Administrator', 'admin', '0192023a7bbd73250516f069df18b500', 'admin', 1),
-('Petugas Satu', 'petugas1', '0192023a7bbd73250516f069df18b500', 'petugas', 1),
+('Petugas Satu', 'petugas', '0192023a7bbd73250516f069df18b500', 'petugas', 1),
 ('Owner Parkir', 'owner', '0192023a7bbd73250516f069df18b500', 'owner', 1);
 
 -- ============================================================
