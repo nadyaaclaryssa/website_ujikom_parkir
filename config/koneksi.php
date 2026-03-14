@@ -1,13 +1,14 @@
+
 <?php
-// Sesuaikan nama database menjadi ukk_parkir
-$host = "localhost";
+$host = "127.0.0.1"; 
 $user = "root";
-$pass = "";
+$pass = "";         
 $db   = "ukk_parkir"; 
 
 $koneksi = mysqli_connect($host, $user, $pass, $db);
 
 if (!$koneksi) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+    die("Koneksi ke database gagal: " . mysqli_connect_error());
 }
 ?>
+

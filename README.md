@@ -1,11 +1,11 @@
-# 🅿️ PARLINE — Smart Parking Management System
+# PARLINE — Smart Parking Management System
 
 > Aplikasi Manajemen Parkir berbasis Web (PHP Native + MySQL)
 > Dibuat untuk Ujian Kompetensi Keahlian (UKK) — Rekayasa Perangkat Lunak
 
 ---
 
-## 📋 Deskripsi Proyek
+## Deskripsi Proyek
 
 **PARLINE** adalah sistem manajemen parkir berbasis web yang dibangun menggunakan **PHP Native** dan **MySQL**. Aplikasi ini dirancang untuk mengelola seluruh proses parkir mulai dari kendaraan masuk, pencatatan transaksi, perhitungan biaya otomatis, hingga cetak struk dan laporan pendapatan.
 
@@ -19,7 +19,7 @@ Sistem ini memiliki **3 level akses pengguna** (Role-Based Access Control):
 
 ---
 
-## 🏗️ Struktur Direktori Proyek
+## Struktur Direktori Proyek
 
 ```
 ukk_aplikasi_parkir/
@@ -66,7 +66,7 @@ ukk_aplikasi_parkir/
 
 ---
 
-## 🗄️ Skema Database (`ukk_parkir`)
+## Skema Database (`ukk_parkir`)
 
 ### Tabel `tb_user`
 Menyimpan data pengguna sistem.
@@ -152,11 +152,11 @@ tb_area ──────── tb_transaksi
 
 ---
 
-## 📖 Dokumentasi Per File (Detail Setiap Baris Kode)
+## Dokumentasi Per File (Detail Setiap Baris Kode)
 
 ---
 
-### 📁 `config/koneksi.php`
+### `config/koneksi.php`
 
 **Fungsi:** Membuat koneksi ke database MySQL.
 
