@@ -1,7 +1,17 @@
 // =========================================================================
 // ALL_CODE.TXT - SMART PARKING SYSTEM (PARLINE)
-// KUMPULAN PURE SOURCE CODE TANPA KOMENTAR UNTUK KEBUTUHAN COPAS UKK
+// KUMPULAN PURE SOURCE CODE TANPA KOMENTAR INSTUKSIONAL UNTUK COPAS UKK
 // =========================================================================
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// NAMA FILE: index.php
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+<?php
+header("location:auth/index.php");
+exit;
+?>
+
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // NAMA FILE: config/koneksi.php
@@ -21,7 +31,7 @@ if (!$koneksi) {
 }
 ?>
 
-
+/
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // NAMA FILE: auth/index.php
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -143,7 +153,7 @@ if (!$koneksi) {
 
 </body>
 </html>
-
+/
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // NAMA FILE: auth/logout.php
@@ -155,7 +165,7 @@ session_start();
 session_destroy();
 header("location:index.php");
 ?>
-
+/
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // NAMA FILE: auth/proses_login.php
@@ -213,7 +223,7 @@ echo "<script>alert('Gagal! Username atau Password Salah.'); window.location='in
 }
 ?>
 
-
+/
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // NAMA FILE: view/admin/area_parkir.php
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -742,7 +752,7 @@ include '../../config/koneksi.php';
         </table>
     </div>
 </body>
-</html>
+</html>/
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // NAMA FILE: view/admin/kelola_user.php
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
