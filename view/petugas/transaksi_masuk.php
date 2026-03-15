@@ -276,10 +276,10 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
                             <select name="id_tarif" required>
                                 <option value="">-- Pilih Jenis --</option>
                                 <?php
-$q_area = // [SINTAKS PHP]: mysqli_query() | Digunakan untuk mengeksekusi sintaks SQL ke dalam koneksi database aktif
-mysqli_query($koneksi, "SELECT * FROM tb_area_parkir");
+$q_tarif = // [SINTAKS PHP]: mysqli_query() | Digunakan untuk mengeksekusi sintaks SQL ke dalam koneksi database aktif
+mysqli_query($koneksi, "SELECT * FROM tb_tarif");
 while ($t = mysqli_fetch_assoc($q_tarif)) {
-    echo "<option value='" . $t['id_tarif'] . "'>" . $t['jenis_kendaraan'] . "</option>";
+    echo "<option value='" . $t['id_tarif'] . "'>" . strtoupper($t['jenis_kendaraan']) . "</option>";
 }
 ?>
                             </select>
@@ -290,9 +290,9 @@ while ($t = mysqli_fetch_assoc($q_tarif)) {
                             <select name="id_area" required>
                                 <option value="">-- Pilih Lokasi --</option>
                                 <?php
-mysqli_query($koneksi, "SELECT * FROM tb_area_parkir");
+$q_area = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir");
 while ($a = mysqli_fetch_assoc($q_area)) {
-    $selected = ($area_terpilih == $a['nama_area']) ? 'selected' : '';
+    $selected = (isset($area_terpilih) && $area_terpilih == $a['nama_area']) ? 'selected' : '';
     echo "<option value='" . $a['id_area'] . "' $selected>" . $a['nama_area'] . "</option>";
 }
 ?>
