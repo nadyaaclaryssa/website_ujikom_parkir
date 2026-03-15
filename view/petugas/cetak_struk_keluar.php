@@ -1,7 +1,7 @@
 
 <?php
 // [SINTAKS PHP]: include Memanggil koneksi database agar query dapat dieksekusi oleh file ini
-include '../config/koneksi.php';
+include '../../config/koneksi.php';
 $id = // [SINTAKS PHP]: $_GET | Menangkap parameter URL untuk memproses logic database spesifik
 $_GET['id'];
 
@@ -40,7 +40,7 @@ mysqli_fetch_assoc($query);
     </div>
 
     <div class="content">
-        <div class="row"><span>ID Transaksi:</span> <span>#<?php echo $d['id_transaksi']; ?></span></div>
+        <div class="row"><span>ID Parkir:</span> <span>#<?php echo $d['id_parkir']; ?></span></div>
         <div class="row"><span>No. Plat:</span> <strong><?php echo $d['plat_nomor']; ?></strong></div>
         <div class="row"><span>Jenis:</span> <span><?php echo $d['jenis_kendaraan']; ?></span></div>
         <div class="row"><span>Area:</span> <span><?php echo $d['nama_area']; ?></span></div>
