@@ -22,8 +22,8 @@ if(isset(// [SINTAKS PHP]: $_POST | Mengambil sekumpulan data yang di-submit dan
 $_POST['tambah'])){
     $jenis = mysqli_real_escape_string($koneksi, // [SINTAKS PHP]: $_POST | Mengambil sekumpulan data yang di-submit dan dikirim melalui form-method POST
 $_POST['jenis_kendaraan']);
-    $harga = mysqli_real_escape_string($koneksi, // [SINTAKS PHP]: $_POST | Mengambil sekumpulan data yang di-submit dan dikirim melalui form-method POST
-$_POST['tarif_per_jam']);
+    $harga_input = $_POST['tarif_per_jam'] ?? $_POST['harga_per_jam'] ?? 0;
+    $harga = mysqli_real_escape_string($koneksi, $harga_input);
     // [SINTAKS PHP]: mysqli_query() | Digunakan untuk mengeksekusi perintah sintaks SQL ke dalam database yang aktif
 mysqli_query($koneksi, "INSERT INTO tb_tarif (jenis_kendaraan, tarif_per_jam) VALUES ('$jenis', '$harga')");
     // [SINTAKS PHP]: header() | Fungsi untuk melakukan Redirect (pengalihan otomatis) ke lokasi halaman web tertentu

@@ -1630,8 +1630,8 @@ if(isset(
 $_POST['tambah'])){
     $jenis = mysqli_real_escape_string($koneksi,
 $_POST['jenis_kendaraan']);
-    $harga = mysqli_real_escape_string($koneksi,
-$_POST['tarif_per_jam']);
+    $harga_input = $_POST['tarif_per_jam'] ?? $_POST['harga_per_jam'] ?? 0;
+    $harga = mysqli_real_escape_string($koneksi, $harga_input);
 mysqli_query($koneksi, "INSERT INTO tb_tarif (jenis_kendaraan, tarif_per_jam) VALUES ('$jenis', '$harga')");
 header("location:tarif_parkir.php");
 }
