@@ -12,7 +12,6 @@ header("location:auth/index.php");
 exit;
 ?>
 
-
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // NAMA FILE: config/koneksi.php
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1632,8 +1631,8 @@ $_POST['tambah'])){
     $jenis = mysqli_real_escape_string($koneksi,
 $_POST['jenis_kendaraan']);
     $harga = mysqli_real_escape_string($koneksi,
-$_POST['harga_per_jam']);
-mysqli_query($koneksi, "INSERT INTO tb_tarif (jenis_kendaraan, harga_per_jam) VALUES ('$jenis', '$harga')");
+$_POST['tarif_per_jam']);
+mysqli_query($koneksi, "INSERT INTO tb_tarif (jenis_kendaraan, tarif_per_jam) VALUES ('$jenis', '$harga')");
 header("location:tarif_parkir.php");
 }
 
@@ -1830,7 +1829,7 @@ header("location:tarif_parkir.php");
                     </div>
                     <div class="input-group">
                         <label>Harga Per Jam</label>
-                        <input type="number" name="harga_per_jam" placeholder="5000" required>
+                        <input type="number" name="tarif_per_jam" placeholder="5000" required>
                     </div>
                     <button type="submit" name="tambah" class="btn-tambah">Tambah Tarif</button>
                 </form>
@@ -1860,7 +1859,7 @@ strtoupper($data['jenis_kendaraan']) ?></td>
                             <td>
                                 <span class="price-tag">
                                     <?php 
-                                        $nominal = $data['harga_per_jam'] ?? $data['harga'] ?? 0;
+                                        $nominal = $data['tarif_per_jam'] ?? $data['harga'] ?? 0;
                                         echo "Rp " . number_format($nominal, 0, ',', '.'); 
                                     ?>
                                 </span>

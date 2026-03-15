@@ -37,14 +37,13 @@ INSERT INTO `tb_user` (`nama_lengkap`, `username`, `password`, `role`, `status_a
 CREATE TABLE `tb_tarif` (
   `id_tarif`         INT(11)      NOT NULL AUTO_INCREMENT,
   `jenis_kendaraan`  VARCHAR(50)  NOT NULL COMMENT 'Contoh: motor, mobil',
-  `harga_per_jam`    INT(11)      NOT NULL DEFAULT 0,
   `tarif_per_jam`    INT(11)      NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_tarif`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `tb_tarif` (`jenis_kendaraan`, `harga_per_jam`, `tarif_per_jam`) VALUES
-('motor', 2000, 2000),
-('mobil', 5000, 5000);
+INSERT INTO `tb_tarif` (`jenis_kendaraan`, `tarif_per_jam`) VALUES
+('motor', 2000),
+('mobil', 5000);
 
 -- ============================================================
 -- 3. TABEL tb_area_parkir

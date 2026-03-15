@@ -23,9 +23,9 @@ $_POST['tambah'])){
     $jenis = mysqli_real_escape_string($koneksi, // [SINTAKS PHP]: $_POST | Mengambil sekumpulan data yang di-submit dan dikirim melalui form-method POST
 $_POST['jenis_kendaraan']);
     $harga = mysqli_real_escape_string($koneksi, // [SINTAKS PHP]: $_POST | Mengambil sekumpulan data yang di-submit dan dikirim melalui form-method POST
-$_POST['harga_per_jam']);
+$_POST['tarif_per_jam']);
     // [SINTAKS PHP]: mysqli_query() | Digunakan untuk mengeksekusi perintah sintaks SQL ke dalam database yang aktif
-mysqli_query($koneksi, "INSERT INTO tb_tarif (jenis_kendaraan, harga_per_jam) VALUES ('$jenis', '$harga')");
+mysqli_query($koneksi, "INSERT INTO tb_tarif (jenis_kendaraan, tarif_per_jam) VALUES ('$jenis', '$harga')");
     // [SINTAKS PHP]: header() | Fungsi untuk melakukan Redirect (pengalihan otomatis) ke lokasi halaman web tertentu
 header("location:tarif_parkir.php");
 }
@@ -226,7 +226,7 @@ header("location:tarif_parkir.php");
                     </div>
                     <div class="input-group">
                         <label>Harga Per Jam</label>
-                        <input type="number" name="harga_per_jam" placeholder="5000" required>
+                        <input type="number" name="tarif_per_jam" placeholder="5000" required>
                     </div>
                     <button type="submit" name="tambah" class="btn-tambah">Tambah Tarif</button>
                 </form>
@@ -256,7 +256,7 @@ strtoupper($data['jenis_kendaraan']) ?></td>
                             <td>
                                 <span class="price-tag">
                                     <?php 
-                                        $nominal = $data['harga_per_jam'] ?? $data['harga'] ?? 0;
+                                        $nominal = $data['tarif_per_jam'] ?? $data['harga'] ?? 0;
                                         echo "Rp " . number_format($nominal, 0, ',', '.'); 
                                     ?>
                                 </span>
