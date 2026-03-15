@@ -7,7 +7,7 @@
 // ======================================
 // [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
 session_start();
-include '../../../config/koneksi.php';
+include '../../config/koneksi.php';
 
 // Proteksi akses Owner
 if($_SESSION['role'] != "owner") { 

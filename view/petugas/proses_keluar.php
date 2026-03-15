@@ -3,7 +3,7 @@
 // [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
 session_start();
 // [SINTAKS PHP]: include | Memanggil koneksi database agar query dapat dieksekusi oleh file ini
-include '../config/koneksi.php';
+include '../../config/koneksi.php';
 date_default_timezone_set('Asia/Jakarta');
 
 if (isset(// [SINTAKS PHP]: $_POST | Mengambil data POST dari antarmuka pengguna form
