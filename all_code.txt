@@ -1,6 +1,6 @@
-
-
-=== FILE: ./auth/index.php ===
+========================================================================
+File: ./auth/index.php
+========================================================================
 <!-- === DOKUMENTASI KLASIFIKASI FILE === -->
 <!-- -> Nama File: index.php (dalam folder auth) -->
 <!-- -> Tujuan Spesifik: Antarmuka UI Login Page / Halaman tempat User memasukkan Kredensial untuk masuk ke sistem -->
@@ -153,7 +153,10 @@
 </html>
 
 
-=== FILE: ./auth/logout.php ===
+
+========================================================================
+File: ./auth/logout.php
+========================================================================
 <?php 
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: logout.php
@@ -171,7 +174,10 @@ header("location:index.php");
 ?>
 
 
-=== FILE: ./auth/proses_login.php ===
+
+========================================================================
+File: ./auth/proses_login.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: proses_login.php
@@ -252,7 +258,10 @@ if (isset($_POST['login'])) {
 }
 ?>
 
-=== FILE: ./config/koneksi.php ===
+
+========================================================================
+File: ./config/koneksi.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: koneksi.php
@@ -281,7 +290,10 @@ if (!$koneksi) {
 }
 ?>
 
-=== FILE: ./index.php ===
+
+========================================================================
+File: ./index.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: index.php
@@ -296,11 +308,143 @@ exit;
 ?>
 
 
-=== FILE: ./view/admin/area_parkir.php ===
+
+========================================================================
+File: ./schema.db
+========================================================================
+-- ============================================================
+-- DATABASE SCHEMA - PARLINE (Aplikasi Parkir UKK)
+-- Database Name : ukk_parkir
+-- Engine         : MySQL / MariaDB
+-- Charset        : utf8mb4
+-- ============================================================
+
+-- Buat database (jika belum ada)
+CREATE DATABASE IF NOT EXISTS `ukk_parkir`
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_general_ci;
+
+USE `ukk_parkir`;
+
+-- ============================================================
+-- 1. TABEL tb_user
+--    Menyimpan data pengguna sistem (Admin, Petugas, Owner).
+-- ============================================================
+CREATE TABLE `tb_user` (
+  `id_user`       INT(11)      NOT NULL AUTO_INCREMENT,
+  `nama_lengkap`  VARCHAR(100) NOT NULL,
+  `username`      VARCHAR(50)  NOT NULL UNIQUE,
+  `password`      VARCHAR(255) NOT NULL COMMENT 'Disimpan dalam format MD5',
+  `role`          ENUM('admin','petugas','owner') NOT NULL DEFAULT 'petugas',
+  `status_aktif`  TINYINT(1)   NOT NULL DEFAULT 1 COMMENT '1 = Aktif, 0 = Non-Aktif',
+  PRIMARY KEY (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `tb_user` (`nama_lengkap`, `username`, `password`, `role`, `status_aktif`) VALUES
+('Administrator', 'admin', '0192023a7bbd73250516f069df18b500', 'admin', 1),
+('Petugas Satu', 'petugas', '0192023a7bbd73250516f069df18b500', 'petugas', 1),
+('Owner Parkir', 'owner', '0192023a7bbd73250516f069df18b500', 'owner', 1);
+
+-- ============================================================
+-- 2. TABEL tb_tarif
+-- ============================================================
+CREATE TABLE `tb_tarif` (
+  `id_tarif`         INT(11)      NOT NULL AUTO_INCREMENT,
+  `jenis_kendaraan`  VARCHAR(50)  NOT NULL COMMENT 'Contoh: motor, mobil',
+  `tarif_per_jam`    INT(11)      NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id_tarif`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `tb_tarif` (`jenis_kendaraan`, `tarif_per_jam`) VALUES
+('motor', 2000),
+('mobil', 5000);
+
+-- ============================================================
+-- 3. TABEL tb_area_parkir
+--    Menyimpan data area/zona parkir beserta kapasitas terisi.
+-- ============================================================
+CREATE TABLE `tb_area_parkir` (
+  `id_area`    INT(11)      NOT NULL AUTO_INCREMENT,
+  `nama_area`  VARCHAR(100) NOT NULL,
+  `kapasitas`  INT(11)      NOT NULL DEFAULT 50,
+  `terisi`     INT(11)      NOT NULL DEFAULT 0 COMMENT 'Jumlah slot yang sedang terpakai',
+  PRIMARY KEY (`id_area`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `tb_area_parkir` (`nama_area`, `kapasitas`, `terisi`) VALUES
+('Lantai 1', 50, 0),
+('Blok A - Depan', 50, 0),
+('Blok B - Samping', 60, 0);
+
+-- ============================================================
+-- 4. TABEL tb_kendaraan
+--    Menyimpan identitas kendaraan secara detail.
+-- ============================================================
+CREATE TABLE `tb_kendaraan` (
+  `id_kendaraan`    INT(11)      NOT NULL AUTO_INCREMENT,
+  `plat_nomor`      VARCHAR(20)  NOT NULL,
+  `jenis_kendaraan` VARCHAR(50)  NOT NULL,
+  `warna`           VARCHAR(50)  DEFAULT '-',
+  `pemilik`         VARCHAR(100) DEFAULT '-',
+  `id_user`         INT(11)      NOT NULL COMMENT 'Petugas yang mendaftarkan',
+  PRIMARY KEY (`id_kendaraan`),
+  FOREIGN KEY (`id_user`) REFERENCES `tb_user`(`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- 5. TABEL tb_transaksi
+--    Transaksi parkir utama menggunakan id_parkir.
+-- ============================================================
+CREATE TABLE `tb_transaksi` (
+  `id_parkir`       INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_kendaraan`    INT(11)      NOT NULL,
+  `id_tarif`        INT(11)      NOT NULL,
+  `id_area`         INT(11)      NOT NULL,
+  `id_user`         INT(11)      NOT NULL COMMENT 'Petugas yang melayani',
+  `waktu_masuk`     DATETIME     NOT NULL,
+  `waktu_keluar`    DATETIME     DEFAULT NULL,
+  `durasi_jam`      INT(11)      DEFAULT NULL,
+  `biaya_total`     INT(11)      NOT NULL DEFAULT 0,
+  `status`          ENUM('masuk','keluar') NOT NULL DEFAULT 'masuk',
+  PRIMARY KEY (`id_parkir`),
+  FOREIGN KEY (`id_kendaraan`) REFERENCES `tb_kendaraan`(`id_kendaraan`) ON DELETE CASCADE,
+  FOREIGN KEY (`id_tarif`)     REFERENCES `tb_tarif`(`id_tarif`) ON DELETE CASCADE,
+  FOREIGN KEY (`id_area`)      REFERENCES `tb_area_parkir`(`id_area`) ON DELETE CASCADE,
+  FOREIGN KEY (`id_user`)      REFERENCES `tb_user`(`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- 6. TABEL tb_log_aktivitas
+-- ============================================================
+CREATE TABLE `tb_log_aktivitas` (
+  `id_log`     INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_user`    INT(11)      NOT NULL,
+  `aktivitas`  VARCHAR(255) NOT NULL,
+  `waktu_aktivitas` DATETIME     NOT NULL,
+  PRIMARY KEY (`id_log`),
+  FOREIGN KEY (`id_user`) REFERENCES `tb_user`(`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- 7. TABEL tb_log
+-- ============================================================
+CREATE TABLE `tb_log` (
+  `id_log`        INT(11)      NOT NULL AUTO_INCREMENT,
+  `user_petugas`  VARCHAR(100) DEFAULT NULL,
+  `aktivitas`     VARCHAR(255) NOT NULL,
+  `waktu`         DATETIME     NOT NULL,
+  PRIMARY KEY (`id_log`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+========================================================================
+File: ./view/admin/area_parkir.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/area_parkir.php
-// -> Tujuan Spesifik: Modul Admin untuk Monitoring Layout Status Ketersediaan masing-masing Blok Lahan Parkir secara Visual Grid.
+// -> Tujuan Spesifik: Modul Admin untuk Monitoring + CRUD (Tambah/Edit/Hapus) Area Parkir secara Real dari Database.
 // ======================================
 
 // [SINTAKS PHP]: session_start() | Persiapan penerimaan token memori akses User aktif
@@ -308,7 +452,6 @@ session_start();
 
 // [SINTAKS PHP]: Verifikasi Cekam Role | Hanya kasta Administrator yg sanggup menembus pagar pembatas halaman ini
 if($_SESSION['role'] != "admin") { 
-    // [SINTAKS PHP]: redirect header | Lemparan keluar kembali ke lobi utama login jika terdeteksi akun kasta petugas/owner
     header("location:../../auth/index.php"); 
     exit; 
 }
@@ -316,13 +459,89 @@ if($_SESSION['role'] != "admin") {
 // [SINTAKS PHP]: Mengikutsertakan modul koneksi.php utama
 include '../../config/koneksi.php';
 
-/* [SINTAKS PHP]: Inisialisasi Data Array Mutidimensi Dummy Visual Layout (Hardcode Mock-up) */
-// -> Karena sistem DB Area yg sesungguhnya tidak begitu detail sedia denah gedung per lantai, Admin pakai data visual hardcode buat pemanis di presentasi.
-$areas = [
-    ['nama' => 'Lantai 1', 'lokasi' => 'BLOK UTAMA', 'total' => 50, 'terisi' => 4],
-    ['nama' => 'Blok A - Depan', 'lokasi' => 'BLOK LOKASI', 'total' => 50, 'terisi' => 7],
-    ['nama' => 'Blok B - Samping', 'lokasi' => 'BLOK LOKASI', 'total' => 60, 'terisi' => 2],
-];
+// =============================================
+// PROSES FORM: Tambah Area Baru
+// =============================================
+$pesan = '';
+$pesan_type = '';
+
+if(isset($_POST['tambah_area'])) {
+    $nama_area = mysqli_real_escape_string($koneksi, $_POST['nama_area']);
+    $kapasitas = (int)$_POST['kapasitas'];
+    
+    if(!empty($nama_area) && $kapasitas > 0) {
+        $sql = "INSERT INTO tb_area_parkir (nama_area, kapasitas, terisi) VALUES ('$nama_area', $kapasitas, 0)";
+        if(mysqli_query($koneksi, $sql)) {
+            $pesan = "Area '$nama_area' berhasil ditambahkan!";
+            $pesan_type = 'success';
+            // Log aktivitas
+            $id_user = $_SESSION['id_user'];
+            mysqli_query($koneksi, "INSERT INTO tb_log_aktivitas (id_user, aktivitas, waktu_aktivitas) VALUES ($id_user, 'Menambah area parkir: $nama_area', NOW())");
+        } else {
+            $pesan = "Gagal menambahkan area!";
+            $pesan_type = 'error';
+        }
+    } else {
+        $pesan = "Nama area dan kapasitas harus diisi dengan benar!";
+        $pesan_type = 'error';
+    }
+}
+
+// =============================================
+// PROSES FORM: Edit Area
+// =============================================
+if(isset($_POST['edit_area'])) {
+    $id_area = (int)$_POST['id_area'];
+    $nama_area = mysqli_real_escape_string($koneksi, $_POST['nama_area']);
+    $kapasitas = (int)$_POST['kapasitas'];
+    
+    if(!empty($nama_area) && $kapasitas > 0) {
+        $sql = "UPDATE tb_area_parkir SET nama_area='$nama_area', kapasitas=$kapasitas WHERE id_area=$id_area";
+        if(mysqli_query($koneksi, $sql)) {
+            $pesan = "Area berhasil diperbarui!";
+            $pesan_type = 'success';
+            $id_user = $_SESSION['id_user'];
+            mysqli_query($koneksi, "INSERT INTO tb_log_aktivitas (id_user, aktivitas, waktu_aktivitas) VALUES ($id_user, 'Mengedit area parkir: $nama_area', NOW())");
+        } else {
+            $pesan = "Gagal memperbarui area!";
+            $pesan_type = 'error';
+        }
+    }
+}
+
+// =============================================
+// PROSES: Hapus Area
+// =============================================
+if(isset($_GET['hapus'])) {
+    $id_area = (int)$_GET['hapus'];
+    // Cek apakah area sedang digunakan (ada kendaraan masuk)
+    $cek = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT terisi FROM tb_area_parkir WHERE id_area=$id_area"));
+    if($cek && $cek['terisi'] > 0) {
+        $pesan = "Tidak bisa menghapus area yang sedang terisi kendaraan!";
+        $pesan_type = 'error';
+    } else {
+        // Cek apakah ada transaksi aktif di area ini
+        $cek_transaksi = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM tb_transaksi WHERE id_area=$id_area AND status='masuk'"));
+        if($cek_transaksi && $cek_transaksi['total'] > 0) {
+            $pesan = "Tidak bisa menghapus area yang memiliki transaksi aktif!";
+            $pesan_type = 'error';
+        } else {
+            $nama_hapus = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT nama_area FROM tb_area_parkir WHERE id_area=$id_area"))['nama_area'] ?? '';
+            if(mysqli_query($koneksi, "DELETE FROM tb_area_parkir WHERE id_area=$id_area")) {
+                $pesan = "Area '$nama_hapus' berhasil dihapus!";
+                $pesan_type = 'success';
+                $id_user = $_SESSION['id_user'];
+                mysqli_query($koneksi, "INSERT INTO tb_log_aktivitas (id_user, aktivitas, waktu_aktivitas) VALUES ($id_user, 'Menghapus area parkir: $nama_hapus', NOW())");
+            } else {
+                $pesan = "Gagal menghapus area!";
+                $pesan_type = 'error';
+            }
+        }
+    }
+}
+
+// [SINTAKS PHP]: AMBIL data area dari DATABASE (bukan hardcode)
+$query = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir ORDER BY id_area ASC");
 ?>
 
 <!-- [SINTAKS HTML]: Document Node Tree Versioning Type -->
@@ -330,21 +549,18 @@ $areas = [
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Hogwarts - Area Parkir</title>
-    <!-- [SINTAKS HTML]: Link Google Fonts Api 'Plus Jakarta Sans' -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Parline - Area Parkir</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- [SINTAKS CSS]: Penjabaran Cascading style inline -->
     <style>
-        /* [SINTAKS CSS]: Root Variabel Koleksi Warna Tema Konsisten Area Admin */
         :root {
             --primary: #1d4ed8;
             --grad-1: #e0f2fe; 
             --grad-2: #bae6fd;
             --success: #10b981;
+            --danger: #ef4444;
         }
 
-        /* [SINTAKS CSS]: Full Screen Locking | Mengunci Ketinggian Penuh (100%) dan melarang scroll bar jelek web asli agar tampak serupa aplikasi desktop/kios responsif */
         html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
 
         body { 
@@ -353,97 +569,167 @@ $areas = [
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* [SINTAKS CSS]: Main Frame Container Layout Dashboard Lebar Hampir Penuh (96%) Putih lengkung */
         .app-container {
             width: 96%; height: 94vh;
             background: white; border-radius: 32px;
             display: flex; overflow: hidden;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.08); /* Efek Soft Shadow Terjun ke Bawah tebal */
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.08);
         }
 
-        /* [SINTAKS CSS]: Navigasi Pilah Sisi Kiri Lebar Tetap statis 280px */
         .sidebar {
             width: 280px; background: #f1f5f9;
             padding: 40px 25px; display: flex; flex-direction: column;
             border-right: 1px solid rgba(226, 232, 240, 0.8);
         }
 
-        /* [SINTAKS CSS]: Styling Bagian Judul Merek Sudut Atas */
         .logo-section { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; padding-left: 10px; }
         .logo-section img { width: 40px; height: 40px; border-radius: 10px; }
         .logo-section h2 { font-size: 22px; margin: 0; color: #0f172a; font-weight: 800; }
 
-        /* [SINTAKS CSS]: Area Menu Membesar dinamis mengikuti sisa tinggi */
         .nav-menu { flex-grow: 1; }
         .nav-menu a {
             display: flex; align-items: center; gap: 12px; padding: 14px 20px;
             text-decoration: none; color: #64748b; font-size: 15px; font-weight: 600;
             margin-bottom: 8px; border-radius: 18px; transition: 0.3s;
         }
-        
-        /* [SINTAKS CSS]: Status Active yg Menyala Biru di Tab Menu Akses saat ini */
         .nav-menu a.active { background: #1d4ed8; color: white; box-shadow: 0 8px 15px -3px rgba(37, 99, 235, 0.25); }
-        .nav-menu a:hover:not(.active) { background: #f1f5f9; color: #0f172a; }
+        .nav-menu a:hover:not(.active) { background: #e2e8f0; color: #0f172a; }
 
-        /* [SINTAKS CSS]: Content Area | Sisa Lahan di kanan untuk konten utama dengan Overflow Y auto agar konten yg kepanjangan bisa discroll lokal */
         .main-content { flex: 1; background: white; padding: 40px 50px; overflow-y: auto; }
 
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .section-title { font-size: 28px; color: #0f172a; margin: 0; font-weight: 800; }
 
-        /* [SINTAKS CSS]: area-grid (Advanced CSS GRID) | Membagi elemen menjadi Kolom-Kolom responsif elastis auto-fill. Minimal 320px lebarnya dan meregang maksimum 1 Fractional*/
+        /* === FORM TAMBAH AREA === */
+        .form-card {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-radius: 20px; padding: 28px 30px;
+            margin-bottom: 30px; border: 1px solid #bfdbfe;
+        }
+        .form-card h3 { margin: 0 0 18px; font-size: 16px; color: #1e40af; font-weight: 700; }
+        .form-row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input {
+            width: 100%; padding: 12px 16px; border: 2px solid #cbd5e1; border-radius: 14px;
+            font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+            outline: none; transition: 0.3s; background: white; box-sizing: border-box;
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(29,78,216,0.1); }
+        .btn-tambah {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 28px; border-radius: 14px; font-weight: 700; font-size: 14px;
+            cursor: pointer; transition: 0.3s; white-space: nowrap;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-tambah:hover { background: #1e40af; transform: translateY(-2px); box-shadow: 0 8px 20px -5px rgba(29,78,216,0.3); }
+
+        /* === AREA GRID === */
         .area-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px;
         }
 
-        /* [SINTAKS CSS]: Area Card Layout | Kotak Putih Pemisah Per Tipe Denah Lantai Parkir */
         .area-card {
             background: white; border-radius: 24px; padding: 30px;
             border: 1px solid #e2e8f0; transition: 0.3s;
             position: relative;
         }
-        
-        /* [SINTAKS CSS]: Transisi animasi Hover yang mengangkat Card menjauh bayangan ke atas sebesar 5 piksel (-5px) */
         .area-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); }
 
-        /* [SINTAKS CSS]: Pill Absolute Positioning | Label/Tag hijau 'Tersedia' nangkring menempel dikanan atas area kotak tanpa terpengaruh flow elemen baris lain */
         .status-badge {
-            position: absolute; top: 30px; right: 30px;
-            background: #dcfce7; color: var(--success);
+            position: absolute; top: 25px; right: 25px;
             padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800;
         }
+        .status-badge.tersedia { background: #dcfce7; color: var(--success); }
+        .status-badge.penuh { background: #fee2e2; color: var(--danger); }
 
         .area-name { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0 0 5px 0; }
-        .area-loc { color: #64748b; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; margin-bottom: 25px; }
+        .area-id { color: #94a3b8; font-size: 11px; font-weight: 600; margin-bottom: 20px; }
 
         .stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
         .stat-label { font-size: 13px; color: #475569; font-weight: 600; }
         .stat-value { font-size: 14px; font-weight: 800; color: #0f172a; }
         .stat-value.available { color: var(--success); }
+        .stat-value.full { color: var(--danger); }
 
-        /* [SINTAKS CSS]: Lintasan Progress Warna Abu */
-        .progress-container {
-            height: 10px; background: #f1f5f9; border-radius: 20px;
-            overflow: hidden; margin: 15px 0;
-        }
-        
-        /* [SINTAKS CSS]: Warna Biru Pengisi Meteran Lintasan Progress Dinamis dgn Transisi Lembut */
-        .progress-bar { height: 100%; background: #1d4ed8; border-radius: 20px; transition: 1s ease-in-out; }
+        .progress-container { height: 10px; background: #f1f5f9; border-radius: 20px; overflow: hidden; margin: 15px 0; }
+        .progress-bar { height: 100%; border-radius: 20px; transition: 1s ease-in-out; }
+        .progress-bar.low { background: #1d4ed8; }
+        .progress-bar.mid { background: #f59e0b; }
+        .progress-bar.high { background: var(--danger); }
 
         .perc-label { text-align: right; font-size: 11px; color: #64748b; font-weight: 700; }
+
+        /* === TOMBOL AKSI DI CARD === */
+        .card-actions { display: flex; gap: 8px; margin-top: 18px; padding-top: 15px; border-top: 1px solid #f1f5f9; }
+        .btn-edit {
+            flex: 1; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+            padding: 10px; border-radius: 12px; font-weight: 700; font-size: 12px;
+            cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-edit:hover { background: #dbeafe; }
+        .btn-hapus {
+            flex: 1; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
+            padding: 10px; border-radius: 12px; font-weight: 700; font-size: 12px;
+            cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-hapus:hover { background: #fee2e2; }
+
         .avatar { width: 40px; height: 40px; background: #1d4ed8; color: white; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; }
+
+        /* === ALERT === */
+        .alert {
+            padding: 14px 20px; border-radius: 14px; margin-bottom: 20px;
+            font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px;
+        }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* === MODAL EDIT === */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 999;
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: white; border-radius: 24px; padding: 35px;
+            width: 100%; max-width: 450px; box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        .modal-box h3 { margin: 0 0 20px; font-size: 18px; color: #0f172a; }
+        .modal-box .form-group { margin-bottom: 15px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-cancel {
+            flex: 1; background: #f1f5f9; color: #475569; border: none;
+            padding: 12px; border-radius: 14px; font-weight: 700; cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+        }
+        .btn-save {
+            flex: 1; background: var(--primary); color: white; border: none;
+            padding: 12px; border-radius: 14px; font-weight: 700; cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px;
+        }
+        .btn-save:hover { background: #1e40af; }
+
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+        .empty-state {
+            text-align: center; padding: 60px 20px; color: #94a3b8;
+        }
+        .empty-state span { font-size: 48px; display: block; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         
-        <!-- [SINTAKS HTML]: Kerangka Menu Samping -->
         <div class="sidebar">
             <div class="logo-section">
-                <!-- [SINTAKS HTML]: <img> Impor Logo -->
                 <img src="../../public/hogwarts-removebg-preview.png" alt="Logo">
                 <h2>Parline</h2>
             </div>
@@ -452,7 +738,6 @@ $areas = [
                 <a href="dashboard.php">🏠 Dashboard</a>
                 <a href="kelola_user.php">👥 Data User</a>
                 <a href="tarif_parkir.php">📂 Data Tarif</a>
-                <!-- [SINTAKS HTML]: Hyperlink Page Anchor Kelas Aktif (Tab Bergelap Biru) -->
                 <a href="area_parkir.php" class="active">🕒 Data Area</a>
             </div>
             
@@ -460,68 +745,164 @@ $areas = [
         </div>
 
         <div class="main-content">
-            <!-- [SINTAKS HTML]: Blok Pembungkus Nama Judul & Profil Petugas Admin Kanan -->
             <div class="header-top">
-                <h1 class="section-title">Informasi Area</h1>
+                <h1 class="section-title">Kelola Area Parkir</h1>
                 <div style="display: flex; align-items: center; gap: 15px; border-left: 1px solid #f1f5f9; padding-left: 20px;">
                     <div style="text-align: right;">
-                        <div style="font-weight: 700; font-size: 14px; color: #0f172a;">Admin Hogwarts</div>
-                        <div style="font-size: 11px; color: #64748b;">Gringotts Level</div>
+                        <div style="font-weight: 700; font-size: 14px; color: #0f172a;"><?= $_SESSION['nama_lengkap'] ?? 'Admin' ?></div>
+                        <div style="font-size: 11px; color: #64748b;">Administrator</div>
                     </div>
-                    <div class="avatar">H</div>
+                    <div class="avatar">A</div>
                 </div>
             </div>
 
-            <!-- [SINTAKS HTML]: Tempat Susunan Box Area Parkir yg bisa berlipat otomatis via GRID CSS -->
+            <!-- ALERT PESAN -->
+            <?php if(!empty($pesan)): ?>
+            <div class="alert alert-<?= $pesan_type ?>">
+                <?= $pesan_type == 'success' ? '✅' : '❌' ?> <?= $pesan ?>
+            </div>
+            <?php endif; ?>
+
+            <!-- FORM TAMBAH AREA BARU -->
+            <div class="form-card">
+                <h3>➕ Tambah Area Parkir Baru</h3>
+                <form method="POST" action="">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nama Area</label>
+                            <input type="text" name="nama_area" placeholder="Contoh: Lantai 2, Blok C - Belakang" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Kapasitas (Slot)</label>
+                            <input type="number" name="kapasitas" placeholder="50" min="1" required>
+                        </div>
+                        <button type="submit" name="tambah_area" class="btn-tambah">➕ Tambah Area</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- GRID AREA PARKIR (DATA REAL DARI DATABASE) -->
             <div class="area-grid">
                 <?php 
-                // [SINTAKS PHP]: Foreach Loop () | Membedah satu persatu nilai koleksi Array multi Mockup $areas yg dilist pd deklarasi awal ke Var Singular $a berturut turut
-                foreach($areas as $a): 
-                    // [SINTAKS PHP]: Operasi Pecahan Matematis untuk menghitung ratio Persentase Mobil yang nangkring mengisi Blok Parkir
-                    $persen = ($a['terisi'] / $a['total']) * 100;
+                $jumlah = 0;
+                while($a = mysqli_fetch_assoc($query)): 
+                    $jumlah++;
+                    $persen = ($a['kapasitas'] > 0) ? ($a['terisi'] / $a['kapasitas']) * 100 : 0;
+                    $sisa = $a['kapasitas'] - $a['terisi'];
+                    $is_penuh = ($sisa <= 0);
                     
-                    // [SINTAKS PHP]: Aritmatika hitung sisa tempat longgar
-                    $sisa = $a['total'] - $a['terisi'];
+                    // Tentukan warna progress bar berdasarkan persentase
+                    $bar_class = 'low';
+                    if($persen >= 70) $bar_class = 'high';
+                    elseif($persen >= 40) $bar_class = 'mid';
                 ?>
-                <!-- [SINTAKS HTML]: Box Komponen Data Looping (Ini akan di Generate terus Sebanyak Blok Area yg didefinisikan db array) -->
                 <div class="area-card">
-                    <span class="status-badge">TERSEDIA</span>
-                    <!-- [SINTAKS PHP]: Echo Array Key pemutar Nilai Tulisan 'Lantai 1, Blok A, dsb' -->
-                    <h3 class="area-name"><?= $a['nama'] ?></h3>
-                    <div class="area-loc">📍 <?= $a['lokasi'] ?></div>
+                    <span class="status-badge <?= $is_penuh ? 'penuh' : 'tersedia' ?>">
+                        <?= $is_penuh ? 'PENUH' : 'TERSEDIA' ?>
+                    </span>
+                    
+                    <h3 class="area-name"><?= htmlspecialchars($a['nama_area']) ?></h3>
+                    <div class="area-id">ID: AREA-<?= str_pad($a['id_area'], 3, '0', STR_PAD_LEFT) ?></div>
 
                     <div class="stat-row">
                         <span class="stat-label">Total Kapasitas</span>
-                        <span class="stat-value"><?= $a['total'] ?> Slot</span>
+                        <span class="stat-value"><?= $a['kapasitas'] ?> Slot</span>
+                    </div>
+
+                    <div class="stat-row">
+                        <span class="stat-label">Terisi</span>
+                        <span class="stat-value"><?= $a['terisi'] ?> Slot</span>
                     </div>
 
                     <div class="stat-row">
                         <span class="stat-label">Tersedia</span>
-                        <span class="stat-value available"><?= $sisa ?> Slot</span>
+                        <span class="stat-value <?= $is_penuh ? 'full' : 'available' ?>"><?= max(0, $sisa) ?> Slot</span>
                     </div>
 
-                    <!-- [SINTAKS HTML]: Track rel warna abu progres bar -->
                     <div class="progress-container">
-                        <!-- [SINTAKS PHP]: Style Inline CSS Eksekutor (Width Persentase % Dinamis) | Memuaikan panjang garis pengisi meteran linear dgn suntikan kalkulasi variabel angka persen PHP secara inline  -->
-                        <div class="progress-bar" style="width: <?= $persen ?>%;"></div>
+                        <div class="progress-bar <?= $bar_class ?>" style="width: <?= min(100, $persen) ?>%;"></div>
                     </div>
-                    
-                    <!-- [SINTAKS PHP]: PHP Round() Math function | Membulatkan panjang desimal berkoma misal "15.4243%" menjadi bulat "15%" biar rapi dilihat -->
                     <div class="perc-label">Terisi: <?= round($persen) ?>%</div>
+
+                    <!-- Tombol Aksi Edit & Hapus -->
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="openEdit(<?= $a['id_area'] ?>, '<?= htmlspecialchars($a['nama_area'], ENT_QUOTES) ?>', <?= $a['kapasitas'] ?>)">✏️ Edit</button>
+                        <a href="area_parkir.php?hapus=<?= $a['id_area'] ?>" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus area \'<?= htmlspecialchars($a['nama_area'], ENT_QUOTES) ?>\'?')">🗑️ Hapus</a>
+                    </div>
                 </div>
-                <?php 
-                // [SINTAKS PHP]: Endforeach | Tutup Siklus eksekutor Perulangan List Elemen
-                endforeach; 
-                ?>
+                <?php endwhile; ?>
+
+                <?php if($jumlah == 0): ?>
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <span>🅿️</span>
+                    <h3>Belum ada area parkir</h3>
+                    <p>Tambahkan area parkir pertama Anda menggunakan form di atas.</p>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <!-- MODAL EDIT AREA -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-box">
+            <h3>✏️ Edit Area Parkir</h3>
+            <form method="POST" action="">
+                <input type="hidden" name="id_area" id="edit_id">
+                <div class="form-group">
+                    <label>Nama Area</label>
+                    <input type="text" name="nama_area" id="edit_nama" required>
+                </div>
+                <div class="form-group">
+                    <label>Total Kapasitas (Slot)</label>
+                    <input type="number" name="kapasitas" id="edit_kapasitas" min="1" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEdit()">Batal</button>
+                    <button type="submit" name="edit_area" class="btn-save">💾 Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // [SINTAKS JS]: Fungsi membuka modal edit dengan data area yang diklik
+        function openEdit(id, nama, kapasitas) {
+            document.getElementById('edit_id').value = id;
+            document.getElementById('edit_nama').value = nama;
+            document.getElementById('edit_kapasitas').value = kapasitas;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        // [SINTAKS JS]: Fungsi menutup modal edit
+        function closeEdit() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // [SINTAKS JS]: Tutup modal jika klik di luar kotak
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if(e.target === this) closeEdit();
+        });
+
+        // [SINTAKS JS]: Auto-hide alert setelah 4 detik
+        setTimeout(function() {
+            var alert = document.querySelector('.alert');
+            if(alert) {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(function() { alert.remove(); }, 500);
+            }
+        }, 4000);
+    </script>
 
 </body>
 </html>
 
 
-=== FILE: ./view/admin/dashboard.php ===
+
+========================================================================
+File: ./view/admin/dashboard.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/dashboard.php
@@ -874,7 +1255,10 @@ $sisa_slot = 1350 - $kendaraan_masuk;
 </html>
 
 
-=== FILE: ./view/admin/kelola_area.php ===
+
+========================================================================
+File: ./view/admin/kelola_area.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/kelola_area.php
@@ -978,7 +1362,10 @@ include '../../config/koneksi.php';
 </body>
 </html>
 
-=== FILE: ./view/admin/kelola_user.php ===
+
+========================================================================
+File: ./view/admin/kelola_user.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/kelola_user.php
@@ -1255,7 +1642,10 @@ if(isset($_GET['hapus'])){
 </html>
 
 
-=== FILE: ./view/admin/laporan.php ===
+
+========================================================================
+File: ./view/admin/laporan.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/laporan.php
@@ -1411,7 +1801,10 @@ $total = mysqli_fetch_assoc($total_duit);
 </html>
 
 
-=== FILE: ./view/admin/log_aktivitas.php ===
+
+========================================================================
+File: ./view/admin/log_aktivitas.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/log_aktivitas.php
@@ -1673,7 +2066,10 @@ $query = mysqli_query($koneksi, $query_str);
 </html>
 
 
-=== FILE: ./view/admin/tarif_edit.php ===
+
+========================================================================
+File: ./view/admin/tarif_edit.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/tarif_edit.php
@@ -1815,7 +2211,10 @@ if(isset($_POST['update'])){
 </html>
 
 
-=== FILE: ./view/admin/tarif_index.php ===
+
+========================================================================
+File: ./view/admin/tarif_index.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/tarif_index.php
@@ -2027,7 +2426,10 @@ while($row = mysqli_fetch_assoc($query)){
 </html>
 
 
-=== FILE: ./view/admin/tarif_parkir.php ===
+
+========================================================================
+File: ./view/admin/tarif_parkir.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/tarif_parkir.php
@@ -2363,7 +2765,10 @@ if(isset($_GET['hapus'])){
 </html>
 
 
-=== FILE: ./view/admin/user_hapus.php ===
+
+========================================================================
+File: ./view/admin/user_hapus.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/user_hapus.php
@@ -2407,7 +2812,10 @@ if($query){
 ?>
 
 
-=== FILE: ./view/admin/user_index.php ===
+
+========================================================================
+File: ./view/admin/user_index.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/user_index.php
@@ -2613,7 +3021,10 @@ while($row = mysqli_fetch_assoc($query)){
 </html>
 
 
-=== FILE: ./view/admin/user_tambah.php ===
+
+========================================================================
+File: ./view/admin/user_tambah.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/admin/user_tambah.php
@@ -2685,7 +3096,10 @@ if(isset($_POST['submit'])){
 </form>
 
 
-=== FILE: ./view/owner/dashboard.php ===
+
+========================================================================
+File: ./view/owner/dashboard.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/owner/dashboard.php
@@ -2861,10 +3275,10 @@ $unit_keluar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as tot
                     <h1>Dashboard Pemilik</h1>
                     <p style="color:#475569; margin:5px 0 0; font-size:14px;">Pantau data keuangan Sistem Parkir hari ini.</p>
                 </div>
-                <!-- [SINTAKS JAVASCRIPT]: onload print trigger | Tombol yang jika disentuh akan memicu Jendela Print OS PC terbuka tanpa reload page -->
-                <button class="btn-report" onclick="window.print()">
-                    <span>🖨️</span> Cetak Laporan Harian
-                </button>
+                <!-- [SINTAKS HTML]: Tombol Export Excel | Mengarahkan Owner ke halaman export_excel.php yang men-generate file .xls untuk diunduh -->
+                <a href="export_excel.php" class="btn-report" style="text-decoration:none;">
+                    <span>📊</span> Export Laporan Excel
+                </a>
             </div>
 
             <!-- [SINTAKS HTML]: Group Susunan 3 Kartu Uang -->
@@ -2944,7 +3358,10 @@ $unit_keluar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as tot
 </html>
 
 
-=== FILE: ./view/owner/detail_laporan.php ===
+
+========================================================================
+File: ./view/owner/detail_laporan.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/owner/detail_laporan.php
@@ -2966,7 +3383,23 @@ include '../../config/koneksi.php';
 
 // [SINTAKS PHP]: mysqli_query (Multiple Inner Join bersilang Logika) | Ambil Tumpukan Data Pelaporan Sejarah
 // Skenario Logikal DB: Relasikan Entitas Transaksi, Entitas Kendaraan. Hanya Filter data yg Status mobilnya sudah Checkout ('Keluar') - Biar yang muncul cuma yg emang udah "Lunas/Bayar Uang Pendapatan Total". Diurutkan Descendant dari yg terbaru paling atas.
-$query = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan WHERE t.status='keluar' ORDER BY t.waktu_keluar DESC");
+
+// [SINTAKS PHP]: Ambil parameter filter tanggal dari URL (GET)
+$tanggal_awal  = isset($_GET['dari']) ? mysqli_real_escape_string($koneksi, $_GET['dari']) : '';
+$tanggal_akhir = isset($_GET['sampai']) ? mysqli_real_escape_string($koneksi, $_GET['sampai']) : '';
+
+$sql = "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan WHERE t.status='keluar'";
+
+if(!empty($tanggal_awal) && !empty($tanggal_akhir)) {
+    $sql .= " AND DATE(t.waktu_keluar) BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
+}
+$sql .= " ORDER BY t.waktu_keluar DESC";
+
+$query = mysqli_query($koneksi, $sql);
+
+// [SINTAKS PHP]: Hitung grand total dari data yang difilter
+$total_query = mysqli_query($koneksi, str_replace("SELECT t.*, k.plat_nomor, k.jenis_kendaraan", "SELECT SUM(t.biaya_total) as total", $sql));
+$grand_total = mysqli_fetch_assoc($total_query)['total'] ?? 0;
 ?>
 
 <!-- [SINTAKS HTML]: Deklarator Versi HTML5 -->
@@ -3074,9 +3507,52 @@ $query = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FRO
             padding: 12px 20px; border-radius: 14px; font-weight: 700; cursor: pointer;
         }
 
+        /* [SINTAKS CSS]: Tombol Hijau Export Excel */
+        .btn-excel {
+            background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none;
+            padding: 12px 20px; border-radius: 14px; font-weight: 700; cursor: pointer;
+            font-size: 13px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-excel:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -5px rgba(22, 163, 74, 0.4); }
+
+        /* [SINTAKS CSS]: Bar Filter Tanggal */
+        .filter-bar {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+            background: white; padding: 18px 22px; border-radius: 18px;
+            border: 1px solid #e2e8f0; margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .filter-bar label { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+        .filter-bar input[type="date"] {
+            padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 12px;
+            font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-dark);
+            outline: none; transition: 0.3s;
+        }
+        .filter-bar input[type="date"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .btn-filter {
+            background: var(--primary); color: white; border: none;
+            padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer;
+            font-size: 13px; transition: 0.3s;
+        }
+        .btn-filter:hover { background: #2563eb; }
+        .btn-reset {
+            background: #f1f5f9; color: var(--text-light); border: 1px solid #e2e8f0;
+            padding: 10px 18px; border-radius: 12px; font-weight: 600; cursor: pointer;
+            font-size: 13px; text-decoration: none; transition: 0.3s;
+        }
+        .btn-reset:hover { background: #e2e8f0; }
+        .btn-group { display: flex; gap: 10px; align-items: center; }
+
         /* [SINTAKS CSS]: Custom UI Scrollbar Safari Kit Mod | Ganti palang grey penggulir ke samping jadi transparan dengan peluru abu tumpul lengkung */
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+        /* [SINTAKS CSS]: Sembunyikan filter bar saat print agar laporan bersih */
+        @media print {
+            .filter-bar, .btn-print, .btn-excel, .btn-group, .sidebar { display: none !important; }
+            .app-container { box-shadow: none; border-radius: 0; height: auto; }
+            .main-content { padding: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -3109,9 +3585,29 @@ $query = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FRO
                     <p style="color:var(--text-light); margin:5px 0 0; font-size:14px;">Seluruh data transaksi keluar dari sistem pos parkir.</p>
                 </div>
                 
-                <!-- [SINTAKS JAVASCRIPT]: Window Print Inject Event | Saat bos ngeklik memicu Window Browser menge-Print kertas dokumen data tabular Table Data di bawahnya -->
-                <button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button>
+                <div class="btn-group">
+                    <!-- [SINTAKS HTML]: Tombol Export Excel | Mengarah ke export_excel.php dengan parameter tanggal -->
+                    <a href="export_excel.php<?= (!empty($tanggal_awal) && !empty($tanggal_akhir)) ? '?dari='.$tanggal_awal.'&sampai='.$tanggal_akhir : '' ?>" class="btn-excel" style="text-decoration:none;">📊 Export Excel</a>
+                    
+                    <!-- [SINTAKS JAVASCRIPT]: Window Print Inject Event | Saat bos ngeklik memicu Window Browser menge-Print kertas dokumen data tabular Table Data di bawahnya -->
+                    <button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button>
+                </div>
             </div>
+
+            <!-- [SINTAKS HTML]: Bar Filter Tanggal untuk memfilter data berdasarkan rentang waktu -->
+            <form class="filter-bar" method="GET" action="">
+                <label>📅 Dari:</label>
+                <input type="date" name="dari" value="<?= htmlspecialchars($tanggal_awal) ?>">
+                <label>Sampai:</label>
+                <input type="date" name="sampai" value="<?= htmlspecialchars($tanggal_akhir) ?>">
+                <button type="submit" class="btn-filter">🔍 Filter</button>
+                <a href="detail_laporan.php" class="btn-reset">↩️ Reset</a>
+                <?php if($grand_total > 0): ?>
+                <div style="margin-left:auto; background:#dcfce7; padding:10px 18px; border-radius:12px; font-weight:700; color:#166534; font-size:14px;">
+                    💰 Total: Rp <?= number_format($grand_total, 0, ',', '.') ?>
+                </div>
+                <?php endif; ?>
+            </form>
 
             <!-- [SINTAKS HTML]: Wadah Kotak Pembatas Table -->
             <div class="table-container">
@@ -3177,7 +3673,10 @@ $query = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FRO
 </html>
 
 
-=== FILE: ./view/owner/diagram_pendapatan.php ===
+
+========================================================================
+File: ./view/owner/diagram_pendapatan.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/owner/diagram_pendapatan.php
@@ -3412,7 +3911,184 @@ for ($i = 6; $i >= 0; $i--) {
 </html>
 
 
-=== FILE: ./view/petugas/cetak_struk.php ===
+
+========================================================================
+File: ./view/owner/export_excel.php
+========================================================================
+<?php
+// === DOKUMENTASI KLASIFIKASI FILE ===
+// -> Nama File: view/owner/export_excel.php
+// -> Tujuan Spesifik: Modul Ekspor data laporan transaksi parkir ke format file Microsoft Excel (.xls).
+//    File ini akan menghasilkan download file Excel yang rapi dan terformat profesional
+//    berisi seluruh data transaksi kendaraan yang sudah Check-Out (status = 'keluar').
+// ======================================
+
+// [SINTAKS PHP]: session_start() | Memulai sesi autentikasi untuk memastikan hanya Owner yang bisa mengekspor
+session_start();
+
+// [SINTAKS PHP]: Validasi Role | Hanya role 'owner' yang diizinkan mengakses fitur ekspor ini
+if($_SESSION['role'] != "owner") { 
+    header("location:../../auth/index.php"); 
+    exit; 
+}
+
+// [SINTAKS PHP]: include koneksi | Menyambungkan ke database MySQL
+include '../../config/koneksi.php';
+
+// [SINTAKS PHP]: Ambil parameter filter tanggal dari GET (jika ada)
+$tanggal_awal  = isset($_GET['dari']) ? $_GET['dari'] : '';
+$tanggal_akhir = isset($_GET['sampai']) ? $_GET['sampai'] : '';
+
+// [SINTAKS PHP]: Bangun Query SQL dengan kondisi filter tanggal opsional
+$sql = "SELECT t.id_parkir, k.plat_nomor, k.jenis_kendaraan, k.warna, 
+               a.nama_area, t.waktu_masuk, t.waktu_keluar, t.durasi_jam, t.biaya_total, 
+               u.nama_lengkap as petugas
+        FROM tb_transaksi t 
+        JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan 
+        JOIN tb_area_parkir a ON t.id_area = a.id_area
+        LEFT JOIN tb_user u ON t.id_user = u.id_user  
+        WHERE t.status='keluar'";
+
+// [SINTAKS PHP]: Jika user memfilter rentang tanggal, tambahkan kondisi WHERE
+if(!empty($tanggal_awal) && !empty($tanggal_akhir)) {
+    $tanggal_awal  = mysqli_real_escape_string($koneksi, $tanggal_awal);
+    $tanggal_akhir = mysqli_real_escape_string($koneksi, $tanggal_akhir);
+    $sql .= " AND DATE(t.waktu_keluar) BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
+}
+
+$sql .= " ORDER BY t.waktu_keluar DESC";
+$query = mysqli_query($koneksi, $sql);
+
+// [SINTAKS PHP]: Hitung grand total pendapatan dari data yang difilter
+$total_pendapatan = 0;
+
+// [SINTAKS PHP]: Nama file Excel dinamis berdasarkan tanggal export
+$nama_file = "Laporan_Parkir_PARLINE_" . date('Y-m-d_His') . ".xls";
+
+// [SINTAKS PHP]: Header HTTP | Mengatur response browser agar menganggap output bukan halaman web,
+// melainkan file Excel yang harus di-download (bukan ditampilkan)
+header("Content-Type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename=\"$nama_file\"");
+header("Pragma: no-cache");
+header("Expires: 0");
+?>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+      xmlns:x="urn:schemas-microsoft-com:office:spreadsheet" 
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+    <meta charset="UTF-8">
+    <!--[if gte mso 9]>
+    <xml>
+        <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+                <x:ExcelWorksheet>
+                    <x:Name>Laporan Parkir</x:Name>
+                    <x:WorksheetOptions>
+                        <x:DisplayGridlines/>
+                    </x:WorksheetOptions>
+                </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+        </x:ExcelWorkbook>
+    </xml>
+    <![endif]-->
+    <style>
+        /* [SINTAKS CSS]: Styling tabel agar tampil rapi di dalam file Excel */
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #333333; padding: 8px 12px; text-align: left; font-family: Calibri, Arial, sans-serif; font-size: 11pt; }
+        th { background-color: #2563eb; color: #ffffff; font-weight: bold; text-align: center; }
+        .header-title { font-size: 16pt; font-weight: bold; font-family: Calibri, Arial, sans-serif; }
+        .header-sub { font-size: 10pt; color: #555555; font-family: Calibri, Arial, sans-serif; }
+        .money { text-align: right; font-weight: bold; }
+        .center { text-align: center; }
+        .total-row td { background-color: #dcfce7; font-weight: bold; font-size: 12pt; }
+        .stripe { background-color: #f8fafc; }
+    </style>
+</head>
+<body>
+
+<!-- Baris Judul Dokumen Excel -->
+<table>
+    <tr>
+        <td colspan="10" class="header-title" style="text-align:center; border:none;">
+            LAPORAN TRANSAKSI PARKIR - PARLINE
+        </td>
+    </tr>
+    <tr>
+        <td colspan="10" class="header-sub" style="text-align:center; border:none;">
+            Sistem Manajemen Parkir Cerdas & Terintegrasi
+        </td>
+    </tr>
+    <tr>
+        <td colspan="10" class="header-sub" style="text-align:center; border:none;">
+            Dicetak pada: <?= date('d F Y, H:i:s') ?> WIB
+            <?php if(!empty($tanggal_awal) && !empty($tanggal_akhir)): ?>
+                | Filter: <?= date('d/m/Y', strtotime($tanggal_awal)) ?> s/d <?= date('d/m/Y', strtotime($tanggal_akhir)) ?>
+            <?php endif; ?>
+        </td>
+    </tr>
+    <!-- Baris kosong sebagai pemisah -->
+    <tr><td colspan="10" style="border:none;">&nbsp;</td></tr>
+</table>
+
+<!-- Tabel Data Utama -->
+<table>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>ID Parkir</th>
+            <th>Plat Nomor</th>
+            <th>Jenis Kendaraan</th>
+            <th>Warna</th>
+            <th>Area Parkir</th>
+            <th>Waktu Masuk</th>
+            <th>Waktu Keluar</th>
+            <th>Durasi (Jam)</th>
+            <th>Total Bayar (Rp)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+        $no = 1;
+        while($data = mysqli_fetch_assoc($query)) { 
+            $total_pendapatan += $data['biaya_total'];
+            $stripe_class = ($no % 2 == 0) ? 'stripe' : '';
+        ?>
+        <tr class="<?= $stripe_class ?>">
+            <td class="center"><?= $no++ ?></td>
+            <td class="center">PKR-<?= str_pad($data['id_parkir'], 4, '0', STR_PAD_LEFT) ?></td>
+            <td style="font-weight:bold;"><?= strtoupper($data['plat_nomor']) ?></td>
+            <td><?= ucfirst($data['jenis_kendaraan']) ?></td>
+            <td><?= ucfirst($data['warna'] ?? '-') ?></td>
+            <td><?= $data['nama_area'] ?></td>
+            <td><?= date('d/m/Y H:i', strtotime($data['waktu_masuk'])) ?></td>
+            <td><?= date('d/m/Y H:i', strtotime($data['waktu_keluar'])) ?></td>
+            <td class="center"><?= $data['durasi_jam'] ?? '-' ?></td>
+            <td class="money">Rp <?= number_format($data['biaya_total'], 0, ',', '.') ?></td>
+        </tr>
+        <?php } ?>
+    </tbody>
+    <tfoot>
+        <!-- Baris Grand Total -->
+        <tr class="total-row">
+            <td colspan="9" style="text-align:right; padding-right:15px;">GRAND TOTAL PENDAPATAN:</td>
+            <td class="money" style="font-size:13pt;">Rp <?= number_format($total_pendapatan, 0, ',', '.') ?></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="text-align:center; font-size:9pt; color:#888; border:none; padding-top:15px;">
+                Dokumen ini digenerate secara otomatis oleh Sistem PARLINE &mdash; <?= date('Y') ?>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+</body>
+</html>
+
+
+
+========================================================================
+File: ./view/petugas/cetak_struk.php
+========================================================================
 <?php
 // [SINTAKS PHP]: include | Memanggil file konfigurasi koneksi ke server MySQL Database
 include '../../config/koneksi.php';
@@ -3506,7 +4182,10 @@ if (!$r) {
 </html>
 
 
-=== FILE: ./view/petugas/cetak_struk_keluar.php ===
+
+========================================================================
+File: ./view/petugas/cetak_struk_keluar.php
+========================================================================
 <?php
 // [SINTAKS PHP]: include | Memanggil koneksi database agar query dapat dieksekusi oleh file ini
 include '../../config/koneksi.php';
@@ -3601,7 +4280,10 @@ $d = mysqli_fetch_assoc($query);
 </html>
 
 
-=== FILE: ./view/petugas/dashboard.php ===
+
+========================================================================
+File: ./view/petugas/dashboard.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/petugas/dashboard.php
@@ -3860,7 +4542,10 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
 </html>
 
 
-=== FILE: ./view/petugas/proses_keluar.php ===
+
+========================================================================
+File: ./view/petugas/proses_keluar.php
+========================================================================
 
 <?php
 // [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
@@ -3934,7 +4619,10 @@ header("location:transaksi_keluar.php");
 
 
 
-=== FILE: ./view/petugas/proses_masuk.php ===
+
+========================================================================
+File: ./view/petugas/proses_masuk.php
+========================================================================
 
 <?php
 // [SINTAKS PHP]: session_start() Memulai sesi (session) browser untuk menyimpan data login pengguna agar sistem mengingat identitasnya
@@ -4002,7 +4690,10 @@ header("location:cetak_struk.php?id=$id_parkir");
 
 
 
-=== FILE: ./view/petugas/transaksi_keluar.php ===
+
+========================================================================
+File: ./view/petugas/transaksi_keluar.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/petugas/transaksi_keluar.php
@@ -4238,7 +4929,10 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
 </html>
 
 
-=== FILE: ./view/petugas/transaksi_masuk.php ===
+
+========================================================================
+File: ./view/petugas/transaksi_masuk.php
+========================================================================
 <?php
 // === DOKUMENTASI KLASIFIKASI FILE ===
 // -> Nama File: view/petugas/transaksi_masuk.php
@@ -4605,3 +5299,6 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
 
 </body>
 </html>
+
+
+

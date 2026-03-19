@@ -173,10 +173,10 @@ $unit_keluar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as tot
                     <h1>Dashboard Pemilik</h1>
                     <p style="color:#475569; margin:5px 0 0; font-size:14px;">Pantau data keuangan Sistem Parkir hari ini.</p>
                 </div>
-                <!-- [SINTAKS JAVASCRIPT]: onload print trigger | Tombol yang jika disentuh akan memicu Jendela Print OS PC terbuka tanpa reload page -->
-                <button class="btn-report" onclick="window.print()">
-                    <span>🖨️</span> Cetak Laporan Harian
-                </button>
+                <!-- [SINTAKS HTML]: Tombol Export Excel | Mengarahkan Owner ke halaman export_excel.php yang men-generate file .xls untuk diunduh -->
+                <a href="export_excel.php" class="btn-report" style="text-decoration:none;">
+                    <span>📊</span> Export Laporan Excel
+                </a>
             </div>
 
             <!-- [SINTAKS HTML]: Group Susunan 3 Kartu Uang -->

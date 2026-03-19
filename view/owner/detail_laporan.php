@@ -19,7 +19,23 @@ include '../../config/koneksi.php';
 
 // [SINTAKS PHP]: mysqli_query (Multiple Inner Join bersilang Logika) | Ambil Tumpukan Data Pelaporan Sejarah
 // Skenario Logikal DB: Relasikan Entitas Transaksi, Entitas Kendaraan. Hanya Filter data yg Status mobilnya sudah Checkout ('Keluar') - Biar yang muncul cuma yg emang udah "Lunas/Bayar Uang Pendapatan Total". Diurutkan Descendant dari yg terbaru paling atas.
-$query = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan WHERE t.status='keluar' ORDER BY t.waktu_keluar DESC");
+
+// [SINTAKS PHP]: Ambil parameter filter tanggal dari URL (GET)
+$tanggal_awal  = isset($_GET['dari']) ? mysqli_real_escape_string($koneksi, $_GET['dari']) : '';
+$tanggal_akhir = isset($_GET['sampai']) ? mysqli_real_escape_string($koneksi, $_GET['sampai']) : '';
+
+$sql = "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan WHERE t.status='keluar'";
+
+if(!empty($tanggal_awal) && !empty($tanggal_akhir)) {
+    $sql .= " AND DATE(t.waktu_keluar) BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
+}
+$sql .= " ORDER BY t.waktu_keluar DESC";
+
+$query = mysqli_query($koneksi, $sql);
+
+// [SINTAKS PHP]: Hitung grand total dari data yang difilter
+$total_query = mysqli_query($koneksi, str_replace("SELECT t.*, k.plat_nomor, k.jenis_kendaraan", "SELECT SUM(t.biaya_total) as total", $sql));
+$grand_total = mysqli_fetch_assoc($total_query)['total'] ?? 0;
 ?>
 
 <!-- [SINTAKS HTML]: Deklarator Versi HTML5 -->
@@ -127,9 +143,52 @@ $query = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FRO
             padding: 12px 20px; border-radius: 14px; font-weight: 700; cursor: pointer;
         }
 
+        /* [SINTAKS CSS]: Tombol Hijau Export Excel */
+        .btn-excel {
+            background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none;
+            padding: 12px 20px; border-radius: 14px; font-weight: 700; cursor: pointer;
+            font-size: 13px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-excel:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -5px rgba(22, 163, 74, 0.4); }
+
+        /* [SINTAKS CSS]: Bar Filter Tanggal */
+        .filter-bar {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+            background: white; padding: 18px 22px; border-radius: 18px;
+            border: 1px solid #e2e8f0; margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .filter-bar label { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+        .filter-bar input[type="date"] {
+            padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 12px;
+            font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-dark);
+            outline: none; transition: 0.3s;
+        }
+        .filter-bar input[type="date"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .btn-filter {
+            background: var(--primary); color: white; border: none;
+            padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer;
+            font-size: 13px; transition: 0.3s;
+        }
+        .btn-filter:hover { background: #2563eb; }
+        .btn-reset {
+            background: #f1f5f9; color: var(--text-light); border: 1px solid #e2e8f0;
+            padding: 10px 18px; border-radius: 12px; font-weight: 600; cursor: pointer;
+            font-size: 13px; text-decoration: none; transition: 0.3s;
+        }
+        .btn-reset:hover { background: #e2e8f0; }
+        .btn-group { display: flex; gap: 10px; align-items: center; }
+
         /* [SINTAKS CSS]: Custom UI Scrollbar Safari Kit Mod | Ganti palang grey penggulir ke samping jadi transparan dengan peluru abu tumpul lengkung */
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+        /* [SINTAKS CSS]: Sembunyikan filter bar saat print agar laporan bersih */
+        @media print {
+            .filter-bar, .btn-print, .btn-excel, .btn-group, .sidebar { display: none !important; }
+            .app-container { box-shadow: none; border-radius: 0; height: auto; }
+            .main-content { padding: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -162,9 +221,29 @@ $query = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan FRO
                     <p style="color:var(--text-light); margin:5px 0 0; font-size:14px;">Seluruh data transaksi keluar dari sistem pos parkir.</p>
                 </div>
                 
-                <!-- [SINTAKS JAVASCRIPT]: Window Print Inject Event | Saat bos ngeklik memicu Window Browser menge-Print kertas dokumen data tabular Table Data di bawahnya -->
-                <button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button>
+                <div class="btn-group">
+                    <!-- [SINTAKS HTML]: Tombol Export Excel | Mengarah ke export_excel.php dengan parameter tanggal -->
+                    <a href="export_excel.php<?= (!empty($tanggal_awal) && !empty($tanggal_akhir)) ? '?dari='.$tanggal_awal.'&sampai='.$tanggal_akhir : '' ?>" class="btn-excel" style="text-decoration:none;">📊 Export Excel</a>
+                    
+                    <!-- [SINTAKS JAVASCRIPT]: Window Print Inject Event | Saat bos ngeklik memicu Window Browser menge-Print kertas dokumen data tabular Table Data di bawahnya -->
+                    <button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button>
+                </div>
             </div>
+
+            <!-- [SINTAKS HTML]: Bar Filter Tanggal untuk memfilter data berdasarkan rentang waktu -->
+            <form class="filter-bar" method="GET" action="">
+                <label>📅 Dari:</label>
+                <input type="date" name="dari" value="<?= htmlspecialchars($tanggal_awal) ?>">
+                <label>Sampai:</label>
+                <input type="date" name="sampai" value="<?= htmlspecialchars($tanggal_akhir) ?>">
+                <button type="submit" class="btn-filter">🔍 Filter</button>
+                <a href="detail_laporan.php" class="btn-reset">↩️ Reset</a>
+                <?php if($grand_total > 0): ?>
+                <div style="margin-left:auto; background:#dcfce7; padding:10px 18px; border-radius:12px; font-weight:700; color:#166534; font-size:14px;">
+                    💰 Total: Rp <?= number_format($grand_total, 0, ',', '.') ?>
+                </div>
+                <?php endif; ?>
+            </form>
 
             <!-- [SINTAKS HTML]: Wadah Kotak Pembatas Table -->
             <div class="table-container">
