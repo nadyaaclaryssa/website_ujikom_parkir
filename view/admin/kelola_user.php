@@ -165,11 +165,12 @@ if(isset($_GET['hapus'])){
             </div>
             
             <div class="nav-menu">
-                <a href="dashboard.php">🏠 Dashboard</a>
+                <a href="dashboard.php"> Dashboard</a>
                 <!-- [SINTAKS HTML]: Highlighted Link Active State ke Biru laut -->
-                <a href="kelola_user.php" class="active">👥 Data User</a>
-                <a href="tarif_parkir.php">📂 Data Tarif</a>
-                <a href="area_parkir.php">🕒 Data Area</a>
+                <a href="kelola_user.php" class="active"> Data User</a>
+                <a href="tarif_parkir.php"> Data Tarif</a>
+                <a href="area_parkir.php"> Data Area</a>
+                <a href="log_aktivitas.php"> Log Aktivitas (Audit)</a>
             </div>
 
             <!-- [SINTAKS HTML]: Meteran Kapasitas Terukur Miniatur -->
@@ -182,7 +183,7 @@ if(isset($_GET['hapus'])){
                 <p style="margin-top:5px; font-size:10px; color:#1e293b;"><?= $kendaraan_masuk ?> / 1350</p>
             </div>
 
-            <a href="../../auth/logout.php" class="btn-logout-sidebar">🚪 Logout</a>
+            <a href="../../auth/logout.php" class="btn-logout-sidebar"> Logout</a>
         </div>
 
         <div class="main-content">
@@ -190,7 +191,7 @@ if(isset($_GET['hapus'])){
 
             <!-- [SINTAKS PHP]: Modul Penampil Log Peringatan Teks Error Merah jika Valuasi $error_msg != String Kosong "" -->
             <?php if($error_msg != ""): ?>
-                <div class="alert-error">⚠️ <?= $error_msg ?></div>
+                <div class="alert-error"> <?= $error_msg ?></div>
             <?php endif; ?>
 
             <!-- [SINTAKS HTML]: Kotak Putih Formulir Pendaftaran Perekrutan Staff Pegawai Baru -->

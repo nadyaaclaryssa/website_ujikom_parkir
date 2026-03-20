@@ -102,6 +102,7 @@ if(isset($_POST['update'])){
         <!-- [SINTAKS HTML]: Menjelaskan lokasi saat Ini Berada. -->
         <a href="tarif_parkir.php" class="active">Data Tarif</a>
         <a href="area_parkir.php">Data Area</a>
+        <a href="log_aktivitas.php">Log Aktivitas</a>
         <a href="../../auth/logout.php" style="margin-top:auto; color:#ffb1b1;">Logout</a>
     </div>
 

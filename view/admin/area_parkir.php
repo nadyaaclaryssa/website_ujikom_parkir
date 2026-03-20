@@ -292,13 +292,14 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir ORDER BY id_area A
             </div>
             
             <div class="nav-menu">
-                <a href="dashboard.php">🏠 Dashboard</a>
-                <a href="kelola_user.php">👥 Data User</a>
-                <a href="tarif_parkir.php">📂 Data Tarif</a>
-                <a href="area_parkir.php" class="active">🕒 Data Area</a>
+                <a href="dashboard.php"> Dashboard</a>
+                <a href="kelola_user.php"> Data User</a>
+                <a href="tarif_parkir.php"> Data Tarif</a>
+                <a href="area_parkir.php" class="active"> Data Area</a>
+                <a href="log_aktivitas.php"> Log Aktivitas (Audit)</a>
             </div>
             
-            <a href="../../auth/logout.php" style="margin-top: auto; color: #64748b; text-decoration: none; font-size: 14px; padding-left: 20px; font-weight: 600;">🚪 Logout</a>
+            <a href="../../auth/logout.php" style="margin-top: auto; color: #64748b; text-decoration: none; font-size: 14px; padding-left: 20px; font-weight: 600;"> Logout</a>
         </div>
 
         <div class="main-content">
@@ -316,13 +317,13 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir ORDER BY id_area A
             <!-- ALERT PESAN -->
             <?php if(!empty($pesan)): ?>
             <div class="alert alert-<?= $pesan_type ?>">
-                <?= $pesan_type == 'success' ? '✅' : '❌' ?> <?= $pesan ?>
+                <?= $pesan_type == 'success' ? '' : '' ?> <?= $pesan ?>
             </div>
             <?php endif; ?>
 
             <!-- FORM TAMBAH AREA BARU -->
             <div class="form-card">
-                <h3>➕ Tambah Area Parkir Baru</h3>
+                <h3> Tambah Area Parkir Baru</h3>
                 <form method="POST" action="">
                     <div class="form-row">
                         <div class="form-group">
@@ -333,7 +334,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir ORDER BY id_area A
                             <label>Total Kapasitas (Slot)</label>
                             <input type="number" name="kapasitas" placeholder="50" min="1" required>
                         </div>
-                        <button type="submit" name="tambah_area" class="btn-tambah">➕ Tambah Area</button>
+                        <button type="submit" name="tambah_area" class="btn-tambah"> Tambah Area</button>
                     </div>
                 </form>
             </div>
@@ -383,15 +384,15 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir ORDER BY id_area A
 
                     <!-- Tombol Aksi Edit & Hapus -->
                     <div class="card-actions">
-                        <button class="btn-edit" onclick="openEdit(<?= $a['id_area'] ?>, '<?= htmlspecialchars($a['nama_area'], ENT_QUOTES) ?>', <?= $a['kapasitas'] ?>)">✏️ Edit</button>
-                        <a href="area_parkir.php?hapus=<?= $a['id_area'] ?>" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus area \'<?= htmlspecialchars($a['nama_area'], ENT_QUOTES) ?>\'?')">🗑️ Hapus</a>
+                        <button class="btn-edit" onclick="openEdit(<?= $a['id_area'] ?>, '<?= htmlspecialchars($a['nama_area'], ENT_QUOTES) ?>', <?= $a['kapasitas'] ?>)"> Edit</button>
+                        <a href="area_parkir.php?hapus=<?= $a['id_area'] ?>" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus area \'<?= htmlspecialchars($a['nama_area'], ENT_QUOTES) ?>\'?')"> Hapus</a>
                     </div>
                 </div>
                 <?php endwhile; ?>
 
                 <?php if($jumlah == 0): ?>
                 <div class="empty-state" style="grid-column: 1 / -1;">
-                    <span>🅿️</span>
+                    <span></span>
                     <h3>Belum ada area parkir</h3>
                     <p>Tambahkan area parkir pertama Anda menggunakan form di atas.</p>
                 </div>
@@ -403,7 +404,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir ORDER BY id_area A
     <!-- MODAL EDIT AREA -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
-            <h3>✏️ Edit Area Parkir</h3>
+            <h3> Edit Area Parkir</h3>
             <form method="POST" action="">
                 <input type="hidden" name="id_area" id="edit_id">
                 <div class="form-group">
@@ -416,7 +417,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_area_parkir ORDER BY id_area A
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeEdit()">Batal</button>
-                    <button type="submit" name="edit_area" class="btn-save">💾 Simpan</button>
+                    <button type="submit" name="edit_area" class="btn-save"> Simpan</button>
                 </div>
             </form>
         </div>

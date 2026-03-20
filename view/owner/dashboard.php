@@ -160,11 +160,11 @@ $unit_keluar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as tot
             </div>
             
             <div class="nav-menu">
-                <a href="dashboard.php" class="active">🏠 Dashboard</a>
-                <a href="detail_laporan.php">📜 Detail Laporan</a>
+                <a href="dashboard.php" class="active">Dashboard</a>
+                <a href="detail_laporan.php">Detail Laporan</a>
             </div>
 
-            <a href="../../auth/logout.php" style="margin-top:auto; color:#f43f5e; text-decoration:none; font-size:13px; font-weight:700; padding-left:18px;">🚪 Logout</a>
+            <a href="../../auth/logout.php" style="margin-top:auto; color:#f43f5e; text-decoration:none; font-size:13px; font-weight:700; padding-left:18px;"> Logout</a>
         </div>
 
         <div class="main-content">
@@ -175,7 +175,7 @@ $unit_keluar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as tot
                 </div>
                 <!-- [SINTAKS HTML]: Tombol Export Excel | Mengarahkan Owner ke halaman export_excel.php yang men-generate file .xls untuk diunduh -->
                 <a href="export_excel.php" class="btn-report" style="text-decoration:none;">
-                    <span>📊</span> Export Laporan Excel
+                    <span></span> Export Laporan Excel
                 </a>
             </div>
 
@@ -207,7 +207,7 @@ $unit_keluar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as tot
 
             <!-- [SINTAKS HTML]: Wadah Grafik Batang Chart.JS -->
             <div class="chart-container">
-                <h3 style="margin: 0 0 25px 0; font-size: 16px; color: #0f172a;">📈 Tren Pendapatan</h3>
+                <h3 style="margin: 0 0 25px 0; font-size: 16px; color: #0f172a;"> Tren Pendapatan</h3>
                 <!-- [SINTAKS HTML]: <canvas> | Titik Koordinat Render Element dimana Objek Grafis 2D Chart.JS akan Digambar/Disuntik ke dalam DOM -->
                 <canvas id="revenueChart" height="100"></canvas>
             </div>

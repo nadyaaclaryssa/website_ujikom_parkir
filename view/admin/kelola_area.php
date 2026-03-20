@@ -53,7 +53,7 @@ include '../../config/koneksi.php';
     <div class="container">
         <!-- [SINTAKS HTML]: Baris Fleksibel Kontainer (Rata Kiri-Kanan / Space-between) untuk Judul Atas dan Tombol Back -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="margin: 0;">📍 Kelola Area Parkir</h2>
+            <h2 style="margin: 0;"> Kelola Area Parkir</h2>
             <!-- [SINTAKS HTML]: Hyperlink Anchor (a) Tautan pintas balik pulang ke rute utama navigasi Admin -->
             <a href="dashboard.php" style="color: #475569; text-decoration: none; font-weight: bold;">← Kembali</a>
         </div>

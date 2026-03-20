@@ -175,11 +175,11 @@ while($row = mysqli_fetch_assoc($query)){
                             <?php 
                                 // [SINTAKS PHP]: Nested If Pattern Matching | Percabangan String Search Engine Pencari Kata Kunci (strpos), Jika Didapatkan kata Sakti (Motor/Mobil) yang di Ubah Standarkan ke Huruf kecil (strtolower) Maka Eksekusi Emoji Sederhana HTML. 
                                 if(strpos(strtolower($t['jenis_kendaraan']), 'motor') !== false) {
-                                    echo "🛵 ";
+                                    echo " ";
                                 } else if(strpos(strtolower($t['jenis_kendaraan']), 'mobil') !== false) {
-                                    echo "🚗 ";
+                                    echo " ";
                                 } else if(strpos(strtolower($t['jenis_kendaraan']), 'lainnya') !== false) {
-                                    echo "🚚 ";
+                                    echo " ";
                                 }
                                 
                                 // [SINTAKS PHP]: Echoing Value / Mengetikan kembali Hasil Nama asli Kendaraanya stelah ditempel stiker Emoji .

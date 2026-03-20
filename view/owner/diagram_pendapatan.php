@@ -159,13 +159,13 @@ for ($i = 6; $i >= 0; $i--) {
             <h2>Owner</h2>
         </div>
         
-        <a href="dashboard.php">🏠 Dashboard Ringkas</a>
-        <a href="diagram_pendapatan.php" class="active">📊 Diagram Analisis</a>
+        <a href="dashboard.php"> Dashboard Ringkas</a>
+        <a href="diagram_pendapatan.php" class="active"> Diagram Analisis</a>
         <!-- Fix Link ke detail laporan (Supaya tdk 404 kalau di klik)-->
-        <a href="detail_laporan.php">📄 Detail Laporan</a>
+        <a href="detail_laporan.php"> Detail Laporan</a>
         
         <div class="sidebar-footer">
-            <a href="../../auth/logout.php">🚪 Logout</a>
+            <a href="../../auth/logout.php"> Logout</a>
         </div>
     </div>
 

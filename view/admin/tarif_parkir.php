@@ -221,11 +221,12 @@ if(isset($_GET['hapus'])){
             </div>
             
             <div class="nav-menu">
-                <a href="dashboard.php">🏠 Dashboard</a>
-                <a href="kelola_user.php">👥 Data User</a>
+                <a href="dashboard.php"> Dashboard</a>
+                <a href="kelola_user.php"> Data User</a>
                 <!-- [SINTAKS HTML]: Anchort Teks Disorot status Aktif (Warna Biru Tegas) -->
-                <a href="tarif_parkir.php" class="active">📂 Data Tarif</a>
-                <a href="area_parkir.php">🕒 Data Area</a>
+                <a href="tarif_parkir.php" class="active"> Data Tarif</a>
+                <a href="area_parkir.php"> Data Area</a>
+                <a href="log_aktivitas.php"> Log Aktivitas (Audit)</a>
             </div>
 
             <div class="storage-box">
@@ -238,7 +239,7 @@ if(isset($_GET['hapus'])){
             </div>
             
             <!-- [SINTAKS HTML]: Exit Door Session Destroyer (Keluar Laman) -->
-            <a href="../../auth/logout.php" style="margin-top: 25px; color: #64748b; text-decoration: none; font-size: 14px; padding-left: 20px; font-weight: 600;">🚪 Logout</a>
+            <a href="../../auth/logout.php" style="margin-top: 25px; color: #64748b; text-decoration: none; font-size: 14px; padding-left: 20px; font-weight: 600;"> Logout</a>
         </div>
 
         <div class="main-content">

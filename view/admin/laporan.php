@@ -80,14 +80,14 @@ $total = mysqli_fetch_assoc($total_duit);
         <div style="text-align:center; padding: 20px;"><h2 style="font-size: 14px;">HOGWARTS PARKIR</h2></div>
         
         <!-- [SINTAKS HTML]: Rentetan Baris Link Pemindah Arah Lokasi Kerja File Petugas  -->
-        <a href="dashboard.php">🏠 Monitoring Area</a>
-        <a href="transaksi_masuk.php">🚗 Kendaraan Masuk</a>
-        <a href="transaksi_keluar.php">💸 Kendaraan Keluar</a>
+        <a href="dashboard.php"> Monitoring Area</a>
+        <a href="transaksi_masuk.php"> Kendaraan Masuk</a>
+        <a href="transaksi_keluar.php"> Kendaraan Keluar</a>
         <!-- [SINTAKS HTML]: Anchort Aktif Penyorot Status Terbuka Biru Khusus Halaman Analisa Laporan  -->
-        <a href="laporan.php" class="active">📊 Laporan Harian</a>
+        <a href="laporan.php" class="active"> Laporan Harian</a>
         
         <!-- [SINTAKS HTML]: Link Mandiri Lompat Keluar Menutup Sesi Parkir Berwarna Merah muda terang  -->
-        <a href="../../auth/logout.php" style="margin-top:auto; color:#ffb1b1;">🚪 Logout</a>
+        <a href="../../auth/logout.php" style="margin-top:auto; color:#ffb1b1;"> Logout</a>
     </div>
 
     <!-- [SINTAKS HTML]: Lapang Lingkup Konten Kerja Kanan Bebas Rintanan Sidebar Kiri  -->

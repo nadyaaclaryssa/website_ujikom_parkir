@@ -205,12 +205,12 @@ $grand_total = mysqli_fetch_assoc($total_query)['total'] ?? 0;
             
             <!-- [SINTAKS HTML]: Navigasi Links. Class penanda aktf menyorot Detail Laporan -->
             <div class="nav-menu">
-                <a href="dashboard.php">🏠 Dashboard</a>
-                <a href="detail_laporan.php" class="active">📜 Detail Laporan</a>
+                <a href="dashboard.php"> Dashboard</a>
+                <a href="detail_laporan.php" class="active"> Detail Laporan</a>
             </div>
             
             <!-- [SINTAKS HTML]: Link Kunci Keluar Aplikasi margin ke bawah sendiri menjauh mentok dinding fleksbox karena M-Top parameter "auto" di CSS  -->
-            <a href="../../auth/logout.php" style="margin-top:auto; color:#f43f5e; text-decoration:none; font-size:13px; font-weight:700;">🚪 Logout</a>
+            <a href="../../auth/logout.php" style="margin-top:auto; color:#f43f5e; text-decoration:none; font-size:13px; font-weight:700;"> Logout</a>
         </div>
 
         <div class="main-content">
@@ -223,24 +223,24 @@ $grand_total = mysqli_fetch_assoc($total_query)['total'] ?? 0;
                 
                 <div class="btn-group">
                     <!-- [SINTAKS HTML]: Tombol Export Excel | Mengarah ke export_excel.php dengan parameter tanggal -->
-                    <a href="export_excel.php<?= (!empty($tanggal_awal) && !empty($tanggal_akhir)) ? '?dari='.$tanggal_awal.'&sampai='.$tanggal_akhir : '' ?>" class="btn-excel" style="text-decoration:none;">📊 Export Excel</a>
+                    <a href="export_excel.php<?= (!empty($tanggal_awal) && !empty($tanggal_akhir)) ? '?dari='.$tanggal_awal.'&sampai='.$tanggal_akhir : '' ?>" class="btn-excel" style="text-decoration:none;"> Export Excel</a>
                     
                     <!-- [SINTAKS JAVASCRIPT]: Window Print Inject Event | Saat bos ngeklik memicu Window Browser menge-Print kertas dokumen data tabular Table Data di bawahnya -->
-                    <button class="btn-print" onclick="window.print()">🖨️ Cetak Laporan</button>
+                    <button class="btn-print" onclick="window.print()"> Cetak Laporan</button>
                 </div>
             </div>
 
             <!-- [SINTAKS HTML]: Bar Filter Tanggal untuk memfilter data berdasarkan rentang waktu -->
             <form class="filter-bar" method="GET" action="">
-                <label>📅 Dari:</label>
+                <label> Dari:</label>
                 <input type="date" name="dari" value="<?= htmlspecialchars($tanggal_awal) ?>">
                 <label>Sampai:</label>
                 <input type="date" name="sampai" value="<?= htmlspecialchars($tanggal_akhir) ?>">
-                <button type="submit" class="btn-filter">🔍 Filter</button>
-                <a href="detail_laporan.php" class="btn-reset">↩️ Reset</a>
+                <button type="submit" class="btn-filter"> Filter</button>
+                <a href="detail_laporan.php" class="btn-reset">↩ Reset</a>
                 <?php if($grand_total > 0): ?>
                 <div style="margin-left:auto; background:#dcfce7; padding:10px 18px; border-radius:12px; font-weight:700; color:#166534; font-size:14px;">
-                    💰 Total: Rp <?= number_format($grand_total, 0, ',', '.') ?>
+                     Total: Rp <?= number_format($grand_total, 0, ',', '.') ?>
                 </div>
                 <?php endif; ?>
             </form>

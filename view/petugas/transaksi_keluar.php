@@ -146,6 +146,52 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
         
         .btn-search:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
+        /* [SINTAKS CSS]: Tabel Kartu Riwayat Terbaru */
+        .table-card {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            border: 1px solid #e2e8f0;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        
+        th {
+            text-align: left; padding: 15px; color: #cbd5e1;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        td {
+            padding: 22px 15px; font-size: 14px; color: #475569;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge {
+            padding: 7px 14px; border-radius: 12px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase;
+        }
+
+        .badge-motor { background: #e0f2fe; color: #0369a1; }
+        .badge-mobil { background: #dcfce7; color: #166534; }
+
+        .plat-code {
+            font-family: 'Courier New', monospace; font-weight: 800;
+            background: #f1f5f9; padding: 5px 10px; border-radius: 8px;
+            color: #0f172a; border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .storage-box {
             margin-top: auto; padding: 20px; background: #f1f5f9; border-radius: 20px;
         }
@@ -165,9 +211,9 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
             
             <!-- [SINTAKS HTML]: Navigasi Menu. Class active kini dipindah menempel di tab Transaksi Keluar -->
             <div class="nav-menu">
-                <a href="dashboard.php">🏠 Dashboard</a>
-                <a href="transaksi_masuk.php">📥 Transaksi Masuk</a>
-                <a href="transaksi_keluar.php" class="active">📤 Transaksi Keluar</a>
+                <a href="dashboard.php"> Dashboard</a>
+                <a href="transaksi_masuk.php"> Transaksi Masuk</a>
+                <a href="transaksi_keluar.php" class="active"> Transaksi Keluar</a>
             </div>
 
             <!-- [SINTAKS HTML]: Metrik Realtime Panel UI Kapasitas Gedung Parkir -->
@@ -182,16 +228,14 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
             </div>
             
             <!-- [SINTAKS HTML]: Tombol Log Out Darurat -->
-            <a href="../../auth/logout.php" style="margin-top:25px; color:#f43f5e; text-decoration:none; font-size:13px; font-weight:700; padding-left:18px;">🚪 Logout</a>
+            <a href="../../auth/logout.php" style="margin-top:25px; color:#f43f5e; text-decoration:none; font-size:13px; font-weight:700; padding-left:18px;"> Logout</a>
         </div>
 
         <!-- [SINTAKS HTML]: Frame Utama Sebelah Kanan (Ruangan Kerja Keluar Parkiran) -->
         <div class="main-content">
-            <div class="header-top" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="header-top" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 30px;">
                 <div>
-                    <h1>Checkout Parkir</h1>
-                    <!-- [SINTAKS PHP]: Inline date format kalender (Dinamis berubah setiap berganti fajar hari) -->
-                    <p style="color:#475569; margin:5px 0 0 0; font-size:14px;"><?= date('l, d F Y') ?></p>
+                    <h1 style="font-size: 24px; color: #0f172a; font-weight: 800; margin: 0;">Checkout Parkir</h1>
                 </div>
                 <!-- [SINTAKS HTML]: Flex Container Atribut Profil Pekerja (Avatars & Nametag) -->
                 <div style="display:flex; align-items:center; gap:15px;">
@@ -224,6 +268,43 @@ $kendaraan_masuk = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as
                         <!-- [SINTAKS HTML]: <a> Hyperlink kembali balik ke beranda Dashboard Panel -->
                         <a href="dashboard.php" style="display:block; text-align:center; margin-top:20px; font-size:13px; color:#475569; text-decoration:none; font-weight:700;">← Kembali ke Dashboard</a>
                     </form>
+                </div>
+            </div>
+
+            <div style="max-width: 800px; margin: 45px auto 0;">
+                <h2 class="section-title">Kendaraan Baru Masuk</h2>
+                <div class="table-card" style="margin-top: 0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plat Nomor</th>
+                                <th>Jenis</th>
+                                <th>Area Parkir</th>
+                                <th>Waktu Masuk</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $q_recent = mysqli_query($koneksi, "SELECT t.*, k.plat_nomor, k.jenis_kendaraan, a.nama_area FROM tb_transaksi t JOIN tb_kendaraan k ON t.id_kendaraan = k.id_kendaraan JOIN tb_area_parkir a ON t.id_area = a.id_area WHERE t.status = 'masuk' ORDER BY t.waktu_masuk DESC LIMIT 5");
+                            if(mysqli_num_rows($q_recent) > 0):
+                                while ($row = mysqli_fetch_assoc($q_recent)):
+                            ?>
+                            <tr>
+                                <td><span class="plat-code"><?= $row['plat_nomor'] ?></span></td>
+                                <td><span class="badge <?= ($row['jenis_kendaraan'] ?? '') == 'motor' ? 'badge-motor' : 'badge-mobil' ?>"><?= strtoupper($row['jenis_kendaraan'] ?? 'NULL') ?></span></td>
+                                <td style="font-weight: 700; color: #0f172a;"><?= $row['nama_area'] ?></td>
+                                <td style="color: #475569; font-size: 13px;"><?= date('d M Y, H:i', strtotime($row['waktu_masuk'])) ?></td>
+                            </tr>
+                            <?php 
+                                endwhile;
+                            else:
+                            ?>
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 30px; color: #64748b;">Belum ada kendaraan yang parkir.</td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
